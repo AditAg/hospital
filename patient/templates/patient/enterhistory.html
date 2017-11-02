@@ -1,0 +1,30 @@
+{% extends 'patient/base.html' %}
+{% block title %} patient Home {% load staticfiles %}{% endblock %}
+{% block body %}
+<div class="container" style="float:right;width:75%; color:black;">
+<form id="purchase" method="post" action="{% url 'patient:enterhistory' %}">
+   {% csrf_token %}
+  <div class="container2">
+    <div class="head">
+      <h2>Add History</h2>
+    </div>
+    <label for="start_time">Start Date</label>
+    <input type="date" name="start_time"/><br/>
+    <label for="end_time">End Date</label>
+    <input type="date" name="end_time" /><br/>
+    <label for="disease">Disease</label>
+    <select name="disease"/>
+    {% for i in diseases %}
+      <option value="{{ i.disease_id }}">{{ i.disease_name }}</option>
+    {% endfor %}
+    </select><br />
+    <label for ="details"> Details</label>
+    <textarea type="text" cols="50" rows="10" name="details" placeholder="details">
+    </textarea>
+    <button type="submit">
+      Add
+    </button>
+  </div>
+</form>
+</div>
+{% endblock %}

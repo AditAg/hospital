@@ -1,0 +1,28 @@
+{% extends 'manager/base.html' %}
+{% block title %} Manager Home {% load staticfiles %}{% endblock %}
+{% block body %}
+<div class="container" style="float:right;width:75%;">
+<form id="purchase" method="post" action="{% url 'manager:addpurchasedetails' instrument_id %}">
+   {% csrf_token %}
+  <div class="container2">
+    <div class="head">
+      <h2>Add PurchaseDetails</h2>
+    </div>
+    {% if error_message %}
+    	<h3 class="text-danger"> Sorry this is already there</h3>
+    {% endif %}
+    <label for="instrument_id">Instrument Id</label>
+    <input type="text" name="instrument_id" value="{{ instrument_id }}" disabled=true/><br/>
+    <label for="date_of_purchase">Date of Purchase</label>
+    <input type="date" name="date_of_purchase" /><br/>
+    <label for="count_bought">Count</label>
+    <input type="text" name="count_bought"/><br />
+    <label for="place_of_purchase">Place of Purchase</label>
+   	<textarea type="text" name="place_of_purchase" placeholder="Address"/></textarea><br />
+    <button type="submit">
+      Add
+    </button>
+  </div>
+</form>
+</div>
+{% endblock %}

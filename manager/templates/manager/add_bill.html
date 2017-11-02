@@ -1,0 +1,33 @@
+{% extends 'manager/base.html' %}
+{% block title %} Manager Home {% load staticfiles %}{% endblock %}
+{% block body %}
+<div class="container" style="float:right;width:75%;">
+<form id="purchase" method="post" action="{% url 'manager:addbill' %}">
+   {% csrf_token %}
+  <div class="container2">
+    <div class="head">
+      <h2>Add Bill</h2>
+    </div>
+    <label for="patient_id">Patient Id</label>
+    <select name="patient_id">
+    {% for i in patients %}
+        <option value="{{ i.patient_id }}"> {{ i.first_name}} &nbsp;{{ i.last_name }}</option>
+    {% endfor %}
+    </select>
+    <label for="bill_date">Date</label>
+    <input type="date" name="bill_date" required><br/>
+    <label for="doc_charges">Doc Charges</label>
+    <input type="number" step="0.01" name="doc_charges"><br/>
+    <label for="room_charges">Room Charges</label>
+    <input type="number" step="0.01" name="room_carges"><br/>
+    <label for="medicine_charges">Medicine Charges</label>
+    <input type="number" step="0.01" name="medicine_charges"/><br/>
+    <label for="service_charges">Service Charges</label>
+    <input type="number" step="0.01" name="service_charges"/><br/>
+    <button type="submit">
+      Add
+    </button>
+  </div>
+</form>
+</div>
+{% endblock %}

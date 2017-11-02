@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>{% block title %} Views {% endblock %}</title>
+    {% load staticfiles %}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="{% static 'css/style2.css' %}">
+
+</head>
+<body>
+{% block navbar %}
+<div class="navbar">
+		<ul> 
+		<li><a href="{% url 'mainpage:index' %}"> Mainpage </a></li>
+		<li><a href="{% url 'manager:index' %}">Home</a></li>
+		<li><a href="{% url 'manager:viewdoctors' %}">Doctors</a></li>
+		<li><a href="{% url 'manager:viewworkers' %}">Workers</a></li>
+		<li><a href="{% url 'manager:viewpatients' %}">Patients</a></li>
+		<li><a href="{% url 'manager:viewinstruments' %}">Inventory</a></li>
+		<li><a href="{% url 'manager:viewmedicines' %}">Medicines</a></li>
+		<li><a href="{% url 'manager:viewrooms' %}">Rooms</a></li>
+		<li><a href="{% url 'manager:viewlabs' %}">Labs</a></li>
+		<li><a href="{% url 'manager:viewbills' %}">Bills</a></li>
+		<li><a href="{% url 'mainpage:logout' %}">Logout</a></li>
+		</ul>
+</div>
+{% endblock %}
+{% block body %}
+
+{% endblock %}

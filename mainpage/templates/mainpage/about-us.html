@@ -1,0 +1,33 @@
+{% extends 'mainpage\base.html' %}
+{% block title %} Meet Our Doctors {% load staticfiles %}{% endblock %}
+{% block body %}
+<section id="meetDoctors">
+<div class="col-lg-12 col-md-12">
+    <div class="section-heading">
+        <h2>Meet Our Doctors</h2>
+        <hr class="line">
+    </div>
+
+<div class="row">
+{% for i in doctors %}
+  <div class="column">
+    <div class="card">
+    <figure>
+      <img src="{% static 'images/doctor-1.jpg' %}" alt="Jane" style="width:70%;height:70%">
+      <div class="container" style="color:blue;">
+        <h2>Dr. {{ i.first_name }} {{ i.last_name }}</h2>
+        <p class="title">Doctor &amp; {{ i.degree }}</p>
+        <p>{{ i.speciality }}</p>
+        <p>{{ i.email }}</p>
+        <p style="color:red;">Lab:<a href="{% url 'services:lab_details' i.lab_id %}">  <button class="button" style="width:50%; padding-right:20%;">{{ i.lab_name }}</button></a></p>
+        <p><button class="button">{{ i.contact }}</button></p>
+        <a href="{% url 'mainpage:doctordetails' i.doctor_id %}"><button type="button" class="btn btn-outline-info">View</button></a>
+      </div>
+      </figure>
+    </div>
+  </div>
+{% endfor %}
+</div>
+</div>
+</section>
+{% endblock %}

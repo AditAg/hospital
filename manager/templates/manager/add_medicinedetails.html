@@ -1,0 +1,38 @@
+{% extends 'manager/base.html' %}
+{% block title %} Manager Home {% load staticfiles %}{% endblock %}
+{% block body %}
+<div class="container" style="float:right;width:75%;">
+<form id="purchase" method="post" action="{% url 'manager:addmedicines' %}">
+   {% csrf_token %}
+  <div class="container2">
+    <div class="head">
+      <h2>Add Medicine Details</h2>
+    </div>
+    {% if error_message %}
+    	<h3 class="text-danger"> {{ error_message }}</h3>
+    {% endif %}
+    <label for="medicine">Medicine</label>
+    <select name="medicine">
+      {% for i in medicines %}
+        <option value="{{ i.medicine_id }}">{{ i.name }}</option>
+      {% endfor %}
+    </select><br>
+    <label for="invoice_no">Invoice No</label>
+    <input type="text" name="invoice_no" /><br/>
+    <label for="batch_no">Batch No</label>
+    <input type="text" name="batch_no"/><br />
+    <label for="date_of_manufacture">Date Of Manufacture</label>
+    <input type="date" name="date_of_manufacture"/><br />
+    <label for="date_of_expiry">Date of Expiry</label>
+    <input type="date" name="date_of_expiry"/><br />
+    <label for="price">Price</label>
+    <input type="text" name="price"/><br />
+    <label for="quantity">Quantity</label>
+    <input type="text" name="quantity"/><br />
+      <button type="submit">
+      Add
+    </button>
+  </div>
+</form>
+</div>
+{% endblock %}

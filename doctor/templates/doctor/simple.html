@@ -1,0 +1,225 @@
+{% extends 'doctor/base.html' %}
+{% block title %} Error!Doctor{%load staticfiles %}{% endblock %}
+
+{% block body %}
+<!--<div class="container" style = "margin-top:100px;">
+    <h1> Sorry, but you have an appointment from {{ appointment.start_time }} to {{ appointment.end_time }} with {{ patient_details.username }}. Would you like
+    to reschedule the appointment or cancel it:</h1><br>
+    <form action = "{% url 'doctor:check' %}" method = "post">
+        <input type = "radio" name = "check" value="reschedule">Reschedule<br>
+        <input type = "radio" name = "check" value="cancel">Cancel<br>
+        <button name="submit" type="submit" id="contact-submit" data-submit="...Sending">Submit</button>
+    </form>
+
+</div>-->
+
+<div class="container container_top">
+{% for uid,i,z in appts %}
+    <div class="shc_{{uid}} abcd">
+        <h4 style="color:blue;"> Sorry, but you have an appointment from {{ i.start_time }} to {{ i.end_time }}</h4>
+    <h5 style="color:blue;">Would you like to reschedule the appointment or cancel it
+      <a href = "{% url 'doctor:appointmentdetails' i.appointment_id %}"> Appointment Details </a>
+      :</h5><br>
+    <button class="btn btn-success reschedule" s="{{ i.start_time }}" e="{{ i.end_time }}" d="{{ i.date }}" \
+            doctorid="{{ i.doctor_id }}" u="{{ uid }}">Reschedule</button>
+    <button class="btn btn-success cancel" s="{{ i.start_time }}" e="{{ i.end_time }}" d="{{ i.date }}" \
+            doctorid="{{ i.doctor_id }}" u="{{ uid }}">Cancel</button>
+        </div>
+{% endfor %}
+{% for uid,i in other_appts %}
+    <div class="shc_{{uid}} abcd">
+        <h4 style="color:blue;"> Sorry, but you have a schedule from {{ i.start_time }} to {{ i.end_time }} for {{ i.message }}</h4>
+    <h5 style="color:blue;">Would you like to reschedule or cancel it:</h5><br>
+    <button class="btn btn-success reschedule" s="{{ i.start_time }}" e="{{ i.end_time }}" d="{{ i.date }}" \
+            doctorid="{{ i.doctor_id }}" u="{{ uid }}">Reschedule</button>
+    <button class="btn btn-success cancel" s="{{ i.start_time }}" e="{{ i.end_time }}" d="{{ i.date }}" \
+            doctorid="{{ i.doctor_id }}" u="{{ uid }}">Cancel</button>
+        </div>
+{% endfor %}
+<h1> Examinations:</h1>
+{% for uid,i,z in examinations %}
+    <div class="shc_{{uid}} abcd">
+        <h4 style="color:blue;"> Sorry, but you have an examination scheduled from {{ i.start_time }} to {{ i.end_time }} for patient {{ z.first_name }} {{ z.last_name }}</h4>
+    <h5 style="color:blue;">Would you like to reschedule or cancel it:</h5><br>
+        <!--z containes all the columns of auth_user and patient-->
+    <button class="btn btn-success reschedule" s="{{ i.start_time }}" e="{{ i.end_time }}" d="{{ i.examination_date }}" \
+            doctorid="{{ i.doctor_id }}" u="{{ uid }}">Reschedule</button>
+    <button class="btn btn-success cancel" s="{{ i.start_time }}" e="{{ i.end_time }}" d="{{ i.examination_date }}" \
+            doctorid="{{ i.doctor_id }}" u="{{ uid }}">Cancel</button>
+        </div>
+{% endfor %}
+</div>
+<style>
+    .modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+</style>
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+
+         <form method="post" onsubmit="return formvalid();" id="reschedule_form">
+            {% csrf_token %}
+            <input class="starttime" type = "time" name="starttime" id="starttime">
+            <label for="starttime">Start Time</label><br>
+            <input class="endtime" type = "time" name = "endtime" id="endtime">
+            <label for="endtime">End Time</label><br>
+            <input class="date" type="date" name = "date" id ="date">
+            <label for="date">Date</label><br>
+            <input class="starttime_old" name="starttime_old" disabled="true">
+            <label for="starttime_old">Earlier Start Time</label><br>
+             <input class="endtime_old" name = "endtime_old" disabled="true">
+             <label for="endtime_old">Earlier End Time</label><br>
+            <input class="date_old" name = "date_old" disabled="true">
+            <label for="date_old">Earlier Date</label><br>
+            <input class="doctor_id" name = "doctor_id" hidden disabled="true">
+
+            <input class="uid" hidden disabled="true">
+            <input type="submit" id="submitreschedule">
+         </form>
+    </div>
+
+
+</div>
+
+<button id="openmodal" hidden></button>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    var btn = document.getElementById("openmodal");
+    var modal = document.getElementById("myModal");
+    var span = document.getElementsByClassName("close")[0];
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+    $('.reschedule').click(function(){
+        $('#openmodal').click();
+        $(".starttime_old").val($(this).attr('s'));
+        $(".endtime_old").val($(this).attr('e'));
+        $(".date_old").val($(this).attr('d'));
+        $(".doctor_id").val($(this).attr('doctorid'));
+        $(".uid").val($(this).attr('u'));
+
+    });
+    function formvalid(){
+        // if($('.starttime').val()==""){
+        // }
+        return false;
+    }
+    
+    
+    
+</script>
+<script type="text/javascript">
+    function redirect(){
+        //alert($('.abcd:visible'.length));
+        if($('.abcd:visible').length<1){
+            $.ajax({
+            type:"POST",
+            url:"{% url 'doctor:set_2' %}",
+            data:{"csrfmiddlewaretoken":"{{csrf_token}}","date":"{{ date }}","day":"{{ day }}","start_time":"{{ start_time }}","end_time":"{{ end_time }}","action":"{{ action }}","message":"{{ message }}","doctor_id":"{{ doctor_id }}"},
+        }).done(function(request){
+            window.location.href="{% url 'doctor:index' %}";
+
+        }).fail(function(){
+
+        });
+            
+        }
+        alert($('.abcd:visible').length);
+    }
+    $('#submitreschedule').click(function(){
+        //alert('input called');
+        $.ajax({
+            type:"POST",
+            url:"{% url 'doctor:check' %}",
+            data:{"start_time":$(".starttime").val(),"end_time":$(".endtime").val(),"date":$(".date").val(),"starttime_old":$(".starttime_old").val(),"endtime_old":$(".endtime_old").val(),"date_old":$(".date_old").val(),"doctor_id":$(".doctor_id").val(),"csrfmiddlewaretoken":"{{csrf_token}}"},
+        }).done(function(request){
+            if(request.clash=='1'){
+                alert('sorry this time slot is also reserved');
+            }
+            else{
+                //alert($('.uid').val());
+                span.click();
+                $('.shc_'+$('.uid').val()).hide();
+                redirect();
+            }
+            /*alert($('.uid').val());
+            alert(request.clash);*/
+        }).fail(function(){
+
+        });
+    });
+</script>
+<script>
+    
+    $('.cancel').click(function(){
+        //alert();
+        var v = $(this).attr('u');
+        $.ajax({
+            type:"POST",
+            url:"{% url 'doctor:cancel' %}",
+            data:{"s":$(this).attr('s'),"e":$(this).attr('e'),"d":$(this).attr('d'),"doctor_id":$(this).attr('doctorid'),"csrfmiddlewaretoken":"{{csrf_token}}"},
+        }).done(function(request){
+            $('.shc_' + v).hide();
+            redirect();
+        }).fail(function(){
+
+        });
+    });
+</script>
+<script type="text/javascript">
+
+        function res() {
+            var m=$('nav').height()+50;
+        $('.container_top').attr('style','padding-top:'+ m +'px;');
+        }
+     $(window).resize(function(){
+        res();
+    });
+     res();
+</script>
+{% endblock %}
+

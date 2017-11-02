@@ -1,0 +1,23 @@
+{% extends 'manager/base.html' %}
+{% block title %} Manager Home {% load staticfiles %}{% endblock %}
+{% block body %}
+<div class="container" style="float:right;width:75%;">
+<form id="purchase" method="post" action="{% url 'manager:addinstrument' %}">
+   {% csrf_token %}
+  <div class="container2">
+    <div class="head">
+      <h2>Add Instrument</h2>
+    </div>
+    <label for="instrument_name">Instrument_Name</label>
+    <input type="text" name="instrument_name"/><br/>
+    <label for="cost_per_piece">Cost Per Piece</label>
+    <input type="text" name="cost_per_piece" /><br/>
+    <label for="instrument_type">Instrument Type</label>
+    <input type="text" name="instrument_type"/><br />
+    <button type="submit">
+      Add
+    </button>
+  </div>
+</form>
+</div>
+{% endblock %}

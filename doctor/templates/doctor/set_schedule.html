@@ -1,0 +1,122 @@
+{% extends 'doctor/base.html' %}
+{% block title %} Hello doctor {% load staticfiles %}
+{% endblock %}
+{% block body %}
+<style>
+    .contact input[type="text"],
+.contact input[type="date"],
+.contact input[type="time"],
+.contact input[type="radio"],
+.contact textarea,
+.contact button[type="submit"] {
+  font: 400 12px/16px "Roboto", Helvetica, Arial, sans-serif;
+}
+
+.contact{
+  background: #F9F9F9;
+  padding: 25px;
+  margin: 150px 0;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+
+.contact h3 {
+  display: block;
+  font-size: 30px;
+  font-weight: 300;
+  margin-bottom: 10px;
+}
+
+
+fieldset {
+  border: medium none !important;
+  margin: 0 0 10px;
+  min-width: 100%;
+  padding: 0;
+  width: 100%;
+}
+
+.contact input[type="text"],
+.contact input[type="date"],
+.contact input[type="time"],
+.contact textarea {
+  width: 100%;
+  border: 1px solid #ccc;
+  background: #FFF;
+  margin: 0 0 5px;
+  padding: 10px;
+}
+
+.contact input[type="text"]:hover,
+.contact input[type="radio"]:hover,
+.contact input[type="date"]:hover,
+.contact input[type="time"]:hover,
+.contact textarea:hover {
+  -webkit-transition: border-color 0.3s ease-in-out;
+  -moz-transition: border-color 0.3s ease-in-out;
+  transition: border-color 0.3s ease-in-out;
+  border: 1px solid #aaa;
+}
+
+.contact textarea {
+  height: 100px;
+  max-width: 100%;
+  resize: none;
+}
+
+.contact button[type="submit"] {
+  cursor: pointer;
+  width: 100%;
+  border: none;
+  background: #4CAF50;
+  color: #FFF;
+  margin: 0 0 5px;
+  padding: 10px;
+  font-size: 15px;
+}
+
+.contact button[type="submit"]:hover {
+  background: #43A047;
+}
+
+.contact button[type="submit"]:active {
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.contact input:focus,
+.contact textarea:focus {
+  outline: 0;
+  border: 1px solid #aaa;
+}
+
+</style>
+<div class="container2" style="margin-top:100px;">
+  <form class="contact" action="{% url 'doctor:set' %}" method="post">
+      {% csrf_token %}
+    <h3>Set your schedule here:</h3>
+    <fieldset>
+      <input placeholder="Date" type="date" tabindex="1" name = "date" required autofocus>
+    </fieldset>
+    <fieldset>
+      <input placeholder="Day" type="text" tabindex="2" name = "day" required>
+    </fieldset>
+    <fieldset>
+      <input placeholder="Start_time" type="time" tabindex="3" name = "start_time" required>
+    </fieldset>
+    <fieldset>
+      <input placeholder="End_Time" type="time" tabindex="4" name = "end_time" required>
+    </fieldset>
+      <fieldset>
+          <label for="r2" class="control-label">Reserve this slot</label>
+          <input type = "radio" name = "action" value = "book" id = "r2"><br>
+          <label for="r1" class="control-label">Free this slot</label>
+          <input type = "radio" name = "action" value = "free" id = "r1"><br>
+      </fieldset>
+    <fieldset>
+      <textarea placeholder="Type your message here...." tabindex="5" name = "message" required></textarea>
+    </fieldset>
+    <fieldset>
+      <button name="submit" type="submit" id="contact-submit" data-submit="...Sending">Submit</button>
+    </fieldset>
+  </form>
+</div>
+{% endblock %}

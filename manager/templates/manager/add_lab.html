@@ -1,0 +1,26 @@
+{% extends 'manager/base.html' %}
+{% block title %} Manager Home {% load staticfiles %}{% endblock %}
+{% block body %}
+<div class="container" style="float:right;width:75%;">
+<form id="purchase" method="post" action="{% url 'manager:addroom' %}">
+   {% csrf_token %}
+  <div class="container2">
+    <div class="head">
+      <h2>Add Lab</h2>
+    </div>
+    <label for="lab_name">Name</label>
+    <input type="text" name="lab_name"/><br/>
+    <label for="lab_open_time">Opening Time</label>
+    <input type="time" name="lab_open_time"/><br/>
+    <label for="lab_close_time">Closing Time</label>
+    <input type="time" name="lab_close_time"/><br/>
+    <label for="lab_description">Lab Description</label>
+    <textarea rows="4" cols="50" name="lab_description"/></textarea><br/>
+    
+    <button type="submit">
+      Add
+    </button>
+  </div>
+</form>
+</div>
+{% endblock %}

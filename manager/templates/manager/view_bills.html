@@ -1,0 +1,112 @@
+{% extends 'manager/base.html' %}
+{% block title %} Manager Home {% load staticfiles %}{% endblock %}
+{% block body %}
+<div class="container" style="float:right;width:75%;">
+<table id="docs">
+  <tr>
+    <th>Bill_No</th>
+    <th>Bill_date</th>
+    <th>Patient_Id</th>
+    <th>Doc_Charges</th>
+    <th>Room_Charges</th>
+    <th>Medicine_Charges</th>
+    <th>Service_Charges</th>
+    <th></th>
+  </tr>
+  {% for i in bills %}
+  		<tr>
+  		<td>{{ i.bill_no }}</td>
+  		<td>{{ i.bill_date }}</td>
+  		<td>{{ i.patient_id }}</td>
+  		<td>{{ i.doc_charges }}</td>
+      <td>{{ i.room_charges }}</td>
+      <td>{{ i.medicine_charges }}</td>
+      <td>{{ i.service_charges }}</td>
+  		<td><button class="btn btn-success bill_update" uid="{{ i.bill_no }}" n="{{ i.bill_date | date:'Y-m-d' }}" t = "{{ i.patient_id }}" s="{{ i.doc_charges }}" d = "{{ i.room_charges }}" q = "{{ i.medicine_charges }}" sn = "{{ i.service_charges }}">Update</button>
+      <button class="btn btn-danger bill_delete" u="{{ i.bill_no }}">Delete</button></td>
+  		</tr>
+  {% endfor %}
+ </table>
+ <button class="btn btn-success addbill">Add Bill</button>
+</div>
+<button id="modals2" hidden></button>
+<div id="Modal_update2" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+
+         <form method="post">
+            {% csrf_token %}
+            <label for="bill_date">Bill Date</label>
+            <input class="bill_date" type = "date" name="bill_date" id="bill_date"><br>
+            <label for="patient_id">Patient Id</label>
+            <input class="patient_id2" type = "text" name = "patient_id" id="patient_id2" disabled><br>
+            <label for="doc_charges">Doc Charges</label>
+            <input class="doc_charges" type="number" step="0.01" name = "doc_charges" id="doc_charges"><br>
+            <label for="room_charges">Room Charges</label>
+            <input class="room_charges" name="room_charges" type="number" step="0.01"><br>
+            <label for="medicine_charges">Medicine Charges</label>
+            <input class="medicine_charges" name = "medicine_charges" type="number" step="0.01"><br>
+            <label for="service_charges">Service Charges</label>
+            <input class="service_charges" name = "service_charges" type="number" step="0.01"><br>
+            <input class="bill_no" type="text" name = "bill_no" hidden>
+            <input type="submit" id="submitupdate2">
+         </form>
+    </div>
+
+
+</div>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    var btn = document.getElementById("modals2");
+    var modal = document.getElementById("Modal_update2");
+    var span = document.getElementsByClassName("close")[0];
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+	$('.bill_update').click(function(){
+    $('#modals2').click();
+    $('.bill_no').val($(this).attr('uid'));
+    $('.bill_date').val($(this).attr('n'));
+    $('.patient_id2').val($(this).attr('t'));
+    $('.doc_charges').val($(this).attr('s'));
+    $('.room_charges').val($(this).attr('d'));
+    $('.medicine_charges').val($(this).attr('q'));
+    $('.service_charges').val($(this).attr('sn'));
+    
+	});
+
+  $('#submitupdate2').click(function(){
+    $.ajax({
+          type:"POST",
+          url:"{% url 'manager:viewbills' %}",
+          data:{"bill_no":$(".bill_no").val(),"patient_id":$(".patient_id2").val(),"bill_date":$(".bill_date").val(),"doc_charges":$(".doc_charges").val(),"room_charges":$(".room_charges").val(),"medicine_charges":$(".medicine_charges").val(),"service_charges":$(".service_charges").val(),
+          "csrfmiddlewaretoken":"{{csrf_token}}"},
+      }).done(function(request){
+        window.location.href="{% url 'manager:viewbills' %}";
+          
+      }).fail(function(){
+        window.location.href="{% url 'manager:viewbills' %}";
+      });
+    
+  });
+  $('.bill_delete').click(function(){
+    $.ajax({
+          type:"POST",
+          url:"{% url 'manager:viewbills' %}",
+          data:{"billno":$(this).attr('u'),"csrfmiddlewaretoken":"{{csrf_token}}"},
+      }).done(function(request){
+        window.location.href="{% url 'manager:viewbills' %}";
+          
+      }).fail(function(){
+        window.location.href="{% url 'manager:viewbills' %}";
+      });
+  });
+  $('.addbill').click(function(){
+    window.location.href="{% url 'manager:addbill' %}";
+  })
+</script>
+{% endblock %}

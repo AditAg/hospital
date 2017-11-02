@@ -1,0 +1,35 @@
+{% extends 'manager/base.html' %}
+{% block title %} Manager Home {% load staticfiles %}{% endblock %}
+{% block body %}
+<div class="container" style="float:right;width:75%;">
+	<table id="docs">
+  <tr>
+    <th>Lab Id</th>
+    <th>Name</th>
+    <th>Opening Time</th>
+    <th>Closing Time</th>
+    <th>No_Doctors</th>
+    <th>No_Workers</th>
+    <th>Lab_Description</th>
+  </tr>
+  {% for i in labs %}
+  		<tr>
+  		<td>{{ i.lab_id }}</td>
+  		<td>{{ i.lab_name }}</td>
+      <td>{{ i.lab_open_time }}</td>
+  		<td>{{ i.lab_close_time }}</td>
+  		<td>{{ i.no_doctors }}</td>
+      <td>{{ i.no_workers }}</td>
+      <td>{{i.lab_description}}</td>
+  		</tr>
+  {% endfor %}
+ </table>
+ <button class="btn btn-success addlab">Add Lab</button>
+ </div>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+  $('.addlab').click(function(){
+    window.location.href="{% url 'manager:addlab' %}";
+  })
+</script>
+{% endblock %}

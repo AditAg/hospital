@@ -1,0 +1,52 @@
+{% extends 'mainpage\base.html' %}
+{% block title %} Our Services {% load staticfiles %}{% endblock %}
+{% block body %}
+<section class="service">
+  <div class="container">
+      <div class="row">
+          <h2> Our services </h2>
+          <hr class="line">
+          {% for i in service_details %}
+            <div class="col-md-4 col-sm-6">
+              <div class="single-service">
+                <div class="single-service-img">
+                  <div class="service-img">
+                    <img class="img-responsive" src="{% static 'images/Operationtheatre.jpg' %}" alt="">
+                  </div>
+                </div>
+                <div class="single-service-text">
+                  <h3>{{ i.service_name }}</h3>
+                  <p> {{ i.service_details }}</p>
+                  {% if i.service_name == "Rooms" %}
+                    <div class="readmore_area">
+                      <a data-hover="Read More" href="{% url 'services:rooms' %}"><span>Read More</span></a>
+                    </div>
+                  {% endif %}
+                </div>
+                
+            </div>
+          </div>
+        {% endfor %}
+        {% for i in labs %}
+          <div class="col-md-4 col-sm-6">
+              <div class="single-service">
+                <div class="single-service-img">
+                  <div class="service-img">
+                    <img class="img-responsive" src="{% static 'images/Operationtheatre.jpg' %}" alt="">
+                  </div>
+                </div>
+                <div class="single-service-text">
+                  <h3>{{ i.lab_name }}</h3>
+                  <p> {{ i.lab_description }}</p>
+                </div>
+                <div class="readmore_area">
+                  <a data-hover="Read More" href="{% url 'services:lab_details' i.lab_id %}"><span>Read More</span></a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+  </div>
+
+</section>
+{% endblock %}

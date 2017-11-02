@@ -1,0 +1,37 @@
+{% extends 'mainpage\base.html' %}
+{% block title %} Register {% endblock %}
+{% block body %}
+
+    <div class="container">
+			<div class="row main">
+				<div class="panel-heading">
+	               <div class="panel-title text-center">
+	               		<h1 class="title">Choose Your Registration:</h1>
+	               		<hr />
+	               	</div>
+	            </div>
+				<div class="main-login main-center" style="margin: 0 auto;">
+					<form class="form-horizontal" method="post" action="{% url 'mainpage:check_registration' %}">
+						{% csrf_token %}
+
+						<div class="form-group" style="margin: 0 auto;">
+							<div class="cols-sm-10">
+								<div class="input-group" style="align:center;">
+									<input type="radio" class="form-control" name="type" id="doctor" value="doctor"/>
+                                    <label for ="doctor" style="color:black;float:right;">Register as doctor </label><br>
+                                    <input type="radio" class="form-control" name="type" id="patient" value="patient"/>
+                                    <label for ="patient" style="color:black;float:right;">Register as patient</label><br>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group ">
+							<button type="submit" class="btn btn-primary btn-lg btn-block login-button">Submit</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+
+{% endblock %}

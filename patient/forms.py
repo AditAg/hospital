@@ -1,0 +1,22 @@
+from django import forms
+
+class PatientForm(forms.Form):
+    password = forms.CharField(widget=forms.PasswordInput)
+    username = forms.CharField(max_length=200)
+    email = forms.CharField(max_length=200)
+    first_name = forms.CharField(max_length=100)
+    last_name = forms.CharField(max_length=100)
+    type = forms.CharField(max_length=10)
+    DOB = forms.DateField()
+    contact_no = forms.CharField(max_length=50)
+    BloodGroup = forms.CharField(max_length=5)
+    #AadharCard_No = forms.CharField(max_length=12)
+    Job = forms.CharField(max_length=20)
+    Street_no = forms.CharField(max_length=10, required=True)
+    Street_Name = forms.CharField(max_length=100,required=True)
+    Apt_number = forms.CharField(max_length=10)
+    City = forms.CharField(max_length=10,required=True)
+    State = forms.CharField(max_length=20)
+    Zip_code = forms.CharField(max_length=10)
+    Gender = forms.ChoiceField(choices = (('M','M'),('F','F')),required=True)
+    Account_No = forms.CharField(max_length=20,required=True)

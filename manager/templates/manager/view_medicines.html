@@ -1,0 +1,35 @@
+{% extends 'manager/base.html' %}
+{% block title %} Manager Home {% load staticfiles %}{% endblock %}
+{% block body %}
+<div class="container" style="float:right;width:75%;">
+	<table id="docs">
+  <tr>
+    <th>Medicine Id</th>
+    <th>Medicine Name</th>
+    <th>Other Details Of Medicine</th>
+    <th>Further Details</th>
+  </tr>
+  {% for i in medicines %}
+  		<tr>
+  		<td>{{ i.medicine_id }}</td>
+  		<td>{{ i.name }}</td>
+  		<td></td>
+  		<td><button class="btn btn-success medicine_details" u="{{ i.medicine_id }}">More Details</button></td>
+  		</tr>
+  {% endfor %}
+ </table>
+ <button class="btn btn-success addmedicine">Add Medicine</button>
+ </div>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+	$('.medicine_details').click(function(){
+		var v = $(this).attr('u');
+    window.location.href="/manager/medicinedetails/" + v +"/";
+		
+	});
+
+  $('.addmedicine').click(function(){
+    window.location.href="{% url 'manager:addmedicine' %}";
+  })
+</script>
+{% endblock %}

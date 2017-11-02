@@ -1,0 +1,37 @@
+{% extends 'manager/base.html' %}
+{% block title %} Manager Home {% load staticfiles %}{% endblock %}
+{% block body %}
+<div class="container" style="float:right;width:75%;">
+	<table id="docs">
+  <tr>
+    <th>Instrument Id</th>
+    <th>Instrument Name</th>
+    <th>Cost_per_piece</th>
+    <th>Instrument_Type</th>
+    <th>Further Details</th>
+  </tr>
+  {% for i in instruments %}
+  		<tr>
+  		<td>{{ i.instrument_id }}</td>
+  		<td>{{ i.instrument_name }}</td>
+  		<td>{{ i.cost_per_piece }}</td>
+  		<td>{{ i.instrument_type }}</td>
+  		<td><button class="btn btn-success details" u="{{ i.instrument_id }}"> More Details</button></td>
+  		</tr>
+  {% endfor %}
+ </table>
+ <button class="btn btn-success addinstrument">Add Instrument</button>
+ </div>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+	$('.details').click(function(){
+		var v = $(this).attr('u');
+    window.location.href="/manager/purchasedetails/" + v +"/";
+		
+	});
+
+  $('.addinstrument').click(function(){
+    window.location.href="{% url 'manager:addinstrument' %}";
+  })
+</script>
+{% endblock %}

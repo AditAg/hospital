@@ -1,0 +1,16 @@
+{% extends 'doctor/base.html' %}
+{% block title %} UnregisteredAppointmentDetail{%load staticfiles %}{% endblock %}
+
+{% block body %}
+    <h1>Appointment_Details (Unregistered User):</h1><br>
+
+    <h3>Patient_Name:</h3>{{ appointment_details.username }}<br>
+<h3>Patient_email:</h3>{{ appointment_details.email }}<br>
+<h3>Patient_type:</h3>{{ appointment_details.type }}<br>
+<h3>Patient_dob:</h3>{{ appointment_details.dob }}<br>
+<h3>Patient_contact:</h3>{{ appointment_details.contact }}<br>
+<h3>Patient_Address:</h3>{{ appointment_details.address }}, {{ appointment_details.street }}, {{appointment_details.City }}<br>
+<h3>Appointment_Date:</h3>{{ appointment_details.appointment_date }}<br>
+<h3>Appointment_Time:</h3>{{ appointment_details.appointment_time }}<br>
+<h3>Appointment_Purpose:</h3>{{ appointment_details.appointment_purpose }}<br>
+{% endblock %}

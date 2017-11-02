@@ -1,0 +1,591 @@
+body,html{
+  overflow-x:hidden;
+}
+body {
+font-family: 'Habibi', serif;
+overflow-x: hidden !important;
+}
+.navbar {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border: 0;
+    border-radius: 0;
+    margin-bottom: 0;
+    font-size: 12px;
+    letter-spacing: 5px;
+}
+
+.navbar-default .navbar-nav li a:hover {
+    color: #1abc9c !important;
+}
+.navbar-default .navbar-nav > li > a {	
+	color: rgba(5,5,5,0.8);
+	position: relative;
+	display: inline-block;	
+	outline: none;	
+	padding: 15px 10px;
+	text-decoration: none;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	font-weight: bold;
+	text-shadow: 0 0 1px rgba(255,255,255,0.3);	
+}
+.navbar-default {
+	padding: 10px 0;
+}
+ul{
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+a{ 
+  text-decoration: none;
+  color: #2f2f2f;  
+}
+a:hover,
+a:focus{
+  outline: none;
+  text-decoration: none;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6{
+	font-family: 'Raleway', sans-serif;	
+}
+h2 {
+  color: #313338;  
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 40px;
+  margin: 0;
+  padding-bottom: 10px;  
+}
+img{
+ border:none;
+}
+#preloader {
+  position: fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background-color:#fff; 
+  z-index:99999;
+}
+
+#status {
+  width:200px;
+  height:200px;
+  position:absolute;
+  left:50%;
+  top:50%; 
+  background-image:url(images/status.gif);
+  background-repeat:no-repeat;
+  background-position:center;
+  margin:-100px 0 0 -100px; 
+}
+
+.scrollToTop {
+	bottom: 60px;
+	font-size: 32px;
+	line-height: 50px;
+	font-weight: bold;
+	height: 50px;
+	position: fixed;
+	right: 50px;
+	text-align: center;
+	width: 50px;
+	z-index: 999;
+	color: #286090;
+	transform:rotate(43deg);
+
+}
+.scrollToTop>i{
+	 transform:rotate(-45deg);
+}
+.scrollToTop:hover,
+.scrollToTop:focus{
+	background-color: black;
+	text-decoration: none;
+	outline: none;
+}
+
+.main-nav{
+	margin : 10px 0px;
+}
+.navbar-default .navbar-nav > li > a::before {
+	position: absolute;
+	top: 80%;
+	left: 50%;
+	color: transparent;
+	content: '•';
+	text-shadow: 0 0 transparent;
+	font-size: 2em;
+	transform: translateX(-50%);
+	pointer-events: none;
+}
+.navbar-default .navbar-nav > li > a:hover::before,
+.navbar-default .navbar-nav > li > a:focus::before,
+.navbar-default .navbar-nav > .active > a::before {
+	color: #4C4F50;
+	text-shadow: 10px 0 #fff, -10px 0 #fff;
+}
+
+.navbar-right .dropdown-menu {
+  left: auto;
+  right: 15px;
+  top: 74px;
+}
+.navbar-right .dropdown-menu::before {
+	background: none repeat scroll 0 0 #fff;
+	content: "";
+	display: block;
+	height: 20px;
+	right: 15px;
+	margin-top: -43px;
+	position: absolute;
+	top: 32px;
+	width: 20px;
+	z-index: -99;
+}
+.dropdown-menu > li > a {
+    color: #c3c3c3;
+    display: block;
+    font-weight: bold;
+    line-height: 1.42857;
+    padding: 5px 20px;
+}
+
+.readmore_area a {
+  color: #fff;
+  display: inline-block;
+  font-size: 1.35em;
+  font-weight: 400;
+  letter-spacing: 1px;
+  margin: 15px 25px;
+  outline: medium none;
+  position: relative;
+  text-decoration: none;
+  text-shadow: 0 0 1px rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
+}
+.readmore_area {
+  margin-top: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.readmore_area a {
+	overflow: hidden;
+	margin: 0 15px;
+}
+
+.readmore_area a span {
+	display: block;
+	padding: 10px 20px;
+	transition: transform 0.3s;
+}
+
+.readmore_area a::before {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: -1;
+	padding: 10px 20px;
+	width: 100%;
+	height: 100%;
+	background: #FFD700;
+	content: attr(data-hover);
+	transition: transform 0.3s;
+}
+
+.readmore_area a:hover span,
+.readmore_area a:focus span {
+	transform: translateX(100%);
+}
+
+.readmore_area a:hover::before,
+.readmore_area a:focus::before {
+	transform: translateX(0%);
+}
+#myCarousel{
+	margin-top: 90px;
+}
+#topFeature{
+	float: left;
+	display: inline;
+	width: 100%;
+	background:#00FA9A;
+}
+.single-top-feature{
+	float: left;
+	display: inline;
+	width: 100%;
+	text-align: center;
+	padding: 40px 30px;
+	background: #00FA9A;
+}
+.single-top-feature > span {
+  color: #FFD700;
+  font-size: 45px;
+  font-weight: bold;
+}
+.single-top-feature>h3{
+	color: #FFD700;	
+	font-size: 30px;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+.single-top-feature > p {
+  color: #FFD700;
+  font-size: 16px;
+}
+.single-top-feature .readmore_area {
+  float: none;
+}
+.single-top-feature .readmore_area a span {
+  background: #FFD700 none repeat scroll 0 0;
+}
+.single-top-feature .readmore_area a {
+  border: 2px solid #fff;  
+}
+.single-top-feature .readmore_area a::before {
+  color: #fff;
+}
+.opening-hours {
+	border:2px solid #000000;
+  background-color: #00FA9A;
+  padding-right: 60px;
+}
+.opening-hours>span{
+	color: #FF0000;	
+}
+.opening-hours>h3{
+	color: #FF0000;	
+}
+.opening-hours>p{
+	color: #FF0000;	
+}
+.opening-table li{
+	border-bottom: 1px solid #f1f1f2;
+	line-height: 30px;
+	margin: 0 15px;
+	padding: 5px 0;
+	color: #000;
+	float: left;
+	display: block;
+	width: 100%;
+}
+.opening-table li span{
+	float: left;
+	color:white;
+}
+.opening-table li div.value{
+	float: right;
+	color:white;
+}
+
+.appointment-area{
+	float: left;
+	display: inline;
+	width: 100%;
+}
+#myModal .modal-content {
+  background: #fff none repeat scroll 0 0;
+  border-radius: 0;
+  float: left;
+  width: 100%;
+}
+#myModal .modal-title {
+  line-height: 1.42857;
+  margin: 0;
+  font-size: 30px;  
+  color:green;
+}
+.modal-header{
+	display: inline;
+	float: left;
+	width: 100%;
+}
+.modal-body {
+  display: inline;
+  float: left;
+  width: 100%;
+  margin: 30px auto 30px;
+  background-color: rgba(5,5,5,0.8);
+  padding: 40px 40px;
+}
+.appointment-form label {
+  color: #888;
+  float: left;
+  font-size: 24px;
+  font-weight: normal;
+  text-align: left;
+}
+.appointment-form .required{
+	color: green;
+	font-size: 15px;
+}
+.wpcf7-select{
+	color: #888;
+}
+input#name{
+	margin-bottom: 16px;
+}
+
+.column {
+    float: left;
+    width: 33.3%;
+    margin-bottom: 16px;
+    padding: 0 8px;
+    flex-grow:1;
+}
+
+/* Display the columns below each other instead of side by side on small screens */
+@media (max-width: 650px) {
+    .column {
+        width: 100%;
+        display: block;
+    }
+}
+
+/* Add some shadows to create a card effect */
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Some left and right padding inside the container */
+.container {
+    padding: 0 16px;
+    color:white;
+}
+
+/* Clear floats */
+.container::after, .row::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+.container h2{
+	color:white;
+	font-family: cursive;
+}
+
+.title {
+    color: grey;
+}
+
+#meetDoctors .button {
+    border: none;
+    outline: 0;
+    display: inline-block;
+    padding: 8px;
+    color: black;
+    background-color: #FFF;
+    text-align: left;
+    cursor: pointer;
+    width: 50%;
+    text-shadow: 0 0 3px #FF0000;
+}
+
+#meetDoctors .button:hover {
+    background-color: #555;
+    box-shadow: 0 4px 8px 0 rgba(255,255,255, 0.2), 0 6px 20px 0 rgba(255, 255, 255, 0.19);
+}
+
+#meetDoctors{
+	float: left;
+	display: inline;
+	width: 100%;
+	padding: 200px 75px;
+}
+
+#meetDoctors figure {
+	position: relative;
+	overflow: hidden;
+	margin: 5px;
+	background: #333;
+}
+#meetDoctors figure img {
+	 position: relative;
+    display: block;
+    width: 100%;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)";
+    filter: alpha(opacity=70);
+    opacity: 0.7;
+    -moz-transition: opacity 0.3s;
+    -o-transition: opacity 0.3s;
+    -webkit-transition: opacity 0.3s;
+    transition: opacity 0.3s
+}
+
+
+.section-heading{
+	float: left;
+	display: inline;
+	width: 100%;
+	text-align: center;
+}
+.line{
+		color:#FFD700;
+	float:center;
+	width:20%;
+	margin-left: 40%;
+	margin-right: 40%;
+	position:relative;
+}
+
+.main{
+	position:relative;
+ 	margin-top: 70px;
+ 	margin-bottom:40px;
+}
+
+hr{
+	width: 10%;
+	color: #fff;
+}
+
+.form-group{
+	margin-bottom: 15px;
+}
+
+label{
+	margin-bottom: 15px;
+}
+
+input,
+input::-webkit-input-placeholder {
+    font-size: 11px;
+    padding-top: 3px;
+}
+
+.main-login{
+ 	background-color: #fff;
+    border-radius: 2px;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+    margin-bottom:40px;
+}
+
+.main-center{
+ 	margin-top: 30px;
+ 	margin: 0 auto;
+ 	max-width: 330px;
+    padding: 40px 40px;
+
+}
+
+.login-button{
+	margin-top: 5px;
+}
+
+.login-register{
+	font-size: 11px;
+	text-align: center;
+}
+
+.service{
+	border:none;
+	position:relative;
+	margin-top:90px;
+	margin-left:40px;
+	margin-right: 90px;
+	color:black;
+}
+.service h2{
+	font-size: 90px;
+    color: #42b3e5;
+    margin-top: 50px;
+    text-align: center;
+    text-decoration: none;
+}
+.single-service {
+    background: #2a2a2a;
+    border-top: 2px solid #fff;
+    margin-top:10px;
+    transition: all 0.7s ease 0s;
+    margin-bottom: 10px;
+}
+.single-service h3 {
+    font-size: 36px;
+    color: #fff;
+    margin-top: 0;
+}
+.single-service p {
+    font-size: 13px;
+    color: #fff;
+    font-family: 'Open Sans', sans-serif;
+    padding: 0 25px;
+    padding-bottom: 30px;
+}
+.single-service:hover .single-service-text {
+    background: #3a9dca;
+}
+.single-service-text{
+	color:black;
+}
+
+#footer{
+	float:left;
+	display:inline;
+	background:#000;
+	color:blue;
+	width:100%;
+}
+ .links{
+ 	padding-top:40px;
+ 	padding-bottom:40px;
+ 	text-align: center;
+ }
+
+#schedule{
+	padding-bottom:40px;
+}
+
+.agenda { 
+	margin-left:10%;
+	margin-right:10%;
+	margin-top:100px;
+ }
+
+/* Dates */
+.agenda .agenda-date { width: 170px; }
+.agenda .agenda-date .dayofmonth {
+  width: 40px;
+  font-size: 36px;
+  line-height: 36px;
+  float: left;
+  text-align: right;
+  margin-right: 10px; 
+}
+.agenda .agenda-date .shortdate {
+  font-size: 0.75em; 
+}
+
+
+/* Times */
+.agenda .agenda-time { width: 140px; } 
+
+
+/* Events */
+.agenda .agenda-events {  } 
+.agenda .agenda-events .agenda-event {  } 
+
+@media (max-width: 767px) {
+    
+}
+.agenda .table-responsive{
+	border:1px solid;
+}
+.agenda .table-responsive th{
+	font-style:sans-serif;
+	font-size: 1.5em;
+	color:blue;
+	background:black;
+}
+.agenda .table-responsive tbody tr:hover{
+	box-shadow: 2px 2px 4px rgba(255, 0, 255, .5);
+}

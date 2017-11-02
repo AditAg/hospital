@@ -1,0 +1,21 @@
+{% extends 'mainpage\base.html' %}
+{% block title %} Our Services {% load staticfiles %}{% endblock %}
+{% block body %}
+
+<section class="service">
+  <div class="container">
+    <div class="row">
+    	<p style="color:blue;">
+    	{{ lab.lab_name }}
+    	{{ lab.lab_description }}
+    	{{ lab.no_workers }}
+    	{{ lab.no_doctors }}
+    	{{ lab.lab_open_time }}
+    	{{ lab.lab_close_time }}
+    	</p>
+
+    </div>
+   </div>
+</section>
+
+{% endblock %}

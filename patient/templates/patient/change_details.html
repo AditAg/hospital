@@ -1,0 +1,47 @@
+{% extends 'patient\base.html' %}
+{% block title %} Hello {{ request.user.first_name }} {% load staticfiles %}{% endblock %}
+{% block body %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	{% for i,name,value in patient_details %}
+		{% if name == "DOB" %}
+		<input type="date" name="{{ name }}" id="{{ i }}" value = "{{ value }}" disabled=true><label for="{{ i }}">{{ name }}</label>
+		{% elif name == "password" %}
+		<input type="password" name="{{ name }}" id="{{ i }}" disabled=true><label for="{{ i }}">{{ name }}</label>
+		{% elif name == "Gender" %}
+		<select name = "{{ name }}" id = "{{ i }}" value = "{{ value }}" disabled=true><label for="{{ i }}">{{ name }}</label>
+		<option value="M">M</option>
+		<option value="F">F</option>
+		</select>
+		{% else %}
+		<input type="text" name="{{ name }}" id="{{ i }}" value="{{ value }}" disabled=true><label for="{{ i }}" >{{ name }}</label>
+		{% endif %}
+		<button class="btn btn-success" id="button_{{ i }}">Change</button><button class="btn btn-success" id="submit_{{ i }}">Submit</button><br>
+	<script>
+	$('#button_{{ i }}').click(function(){
+		alert('{{ i }}');
+		//$('#{{ i }}').attr('disabled',true);
+		$('#{{ i }}').removeAttr('disabled');
+	});
+	$('#submit_{{ i }}').click(function(){
+
+		$.ajax({
+            type:"POST",
+            url:"{% url 'patient:change' %}",
+            data:{"csrfmiddlewaretoken":"{{csrf_token}}","{{ name }}":$("#{{ i }}").val()},
+        }).done(function(request){
+            $('#{{ i }}').attr("value",$('#{{ i }}').val());
+            $('#{{ i }}').attr('disabled',true);
+           	/*alert($('.uid').val());
+            alert(request.clash);*/
+        }).fail(function(){
+        	alert('failed');
+        	$('#{{ i }}').attr("value",{{ value }});
+            $('#{{ i }}').attr('disabled',true);
+        });
+	});
+	</script>
+	{% endfor %}
+
+
+
+{% endblock %}

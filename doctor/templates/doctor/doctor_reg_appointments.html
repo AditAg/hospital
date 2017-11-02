@@ -1,0 +1,20 @@
+{% extends 'doctor/base.html' %}
+{% block title %} RegisteredAppointmentDetail{%load staticfiles %}{% endblock %}
+
+{% block body %}
+    <h1>Appointment_Details</h1><br>
+
+    <h3>Patient_Name:</h3>{{ appointment_details.username }}<br>
+<h3>Patient_first_name:</h3>{{ appointment_details.first_name }}<br>
+<h3>Patient_last_name:</h3>{{ appointment_details.last_name }}<br>
+<h3>Patient_email:</h3>{{ appointment_details.email }}<br>
+<h3>Patient_type:</h3>{{ appointment_details.type }}<br>
+<h3>Patient_DOB:</h3>{{ appointment_details.DOB }}<br>
+<h3>Patient_contact_no:</h3>{{ appointment_details.contact_no }}<br>
+<h3>Patient_BloodGroup:</h3>{{ appointment_details.BloodGroup }}<br>
+<h3>Patient_Address:</h3>{{ appointment_details.Apt_Number }}, {{ appointment_details.Street_No }}, {{appointment_details.Street_Name }},
+ {{appointment_details.City }},{{ appointment_details.State }}<br>
+<h3>Appointment_Date:</h3>{{ appointment_details.appointment_date }}<br>
+<h3>Appointment_Time:</h3>{{ appointment_details.appointment_time }}<br>
+<h3>Appointment_Purpose:</h3>{{ appointment_details.appointment_purpose }}<br>
+{% endblock %}

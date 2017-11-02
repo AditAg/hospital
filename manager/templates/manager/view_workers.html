@@ -1,0 +1,138 @@
+{% extends 'manager/base.html' %}
+{% block title %} Manager Home {% load staticfiles %}{% endblock %}
+{% block body %}
+<div class="container" style="float:right;width:75%;">
+<table id="docs">
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>salary</th>
+    <th>Address</th>
+    <th>Contact</th>
+    <th>Date Of Joining</th>
+    <th></th>
+  </tr>
+  {% for i in worker_details %}
+  		<tr>
+  		<td>
+      {{ i.worker_name }}</td>
+  		<td>{{ i.worker_type }}</td>
+  		<td>{{ i.salary }}</td>
+  		<td>{{ i.apt_number }},{{ i.street_no }},{{i.street_name }},{{ i.city }}, {{ i.state }}</td>
+      <td>{{ i.contact }}</td>
+      <td>{{ i.date_of_joining }}</td>
+  		<td><button class="btn btn-success worker_update" uid="{{ i.worker_id }}" n="{{ i.worker_name }}" t = "{{ i.worker_type }}" s="{{ i.salary }}" d = "{{ i.date_of_joining | date:'Y-m-d'}}" q = "{{ i.qualifications }}" sn = "{{ i.street_no }}" snm = "{{ i.street_name }}" apt="{{ i.apt_number }}" c ="{{ i.city }}" st = "{{ i.state }}" g = "{{ i.gender }}" a = "{{ i.account_no }}" wd = "{{ i.work_duration }}" cont = "{{ i.contact }}">Update</button>
+      <button class="btn btn-danger worker_delete" u="{{ i.worker_id }}">Delete</button></td>
+  		</tr>
+  {% endfor %}
+ </table>
+ <button class="btn btn-success addworker">Add Worker</button>
+</div>
+<button id="modals" hidden></button>
+<div id="Modal_update" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+
+         <form method="post" onsubmit="return formvalid();">
+            {% csrf_token %}
+            <label for="worker_name">Worker Name</label>
+            <input class="worker_name" type = "text" name="worker_name" id="worker_name"><br>
+            <label for="worker_type">Type</label>
+            <input class="worker_type" type = "text" name = "worker_type" id="worker_type"><br>
+            <label for="date_of_joining">Date Of Joining</label>
+            <input class="date_of_joining" type="date" name = "date_of_joining" id="date_of_joining"><br>
+            <label for="qualifications">Qualifications</label>
+            <input class="qualifications" name="qualifications" ><br>
+            <label for="street_no">Street No</label>
+            <input class="street_no" name = "street_no"><br>
+            <label for="street_name">Street Name</label>
+            <input class="street_name" name = "street_name"><br>
+            <label for="apt_number">Apt Number</label>
+            <input class="apt_number" name = "apt_number"><br>
+            <label for="city">City</label>
+            <input class="city" name = "city"><br>
+            <label for="state">State</label>
+            <input class="state" name = "state"><br>
+            <label for="gender">Gender</label>
+            <select class="gender" name = "gender">
+              <option value="M">M</option>
+              <option value="F">F</option>
+            </select><br>
+            <label for="account_no">Account_No</label>
+            <input class="account_no" name = "account_no"><br>
+            <label for="contact">Contact</label>
+            <input class="contact" name = "contact"><br>
+            <label for="work_duration">Work Duration</label>
+            <input class="work_duration" name = "work_duration"><br>
+            <input class="worker_id" type="text" name = "worker_id" hidden>
+            <input type="submit" id="submitupdate">
+         </form>
+    </div>
+
+
+</div>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    var btn = document.getElementById("modals");
+    var modal = document.getElementById("Modal_update");
+    var span = document.getElementsByClassName("close")[0];
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+	$('.worker_update').click(function(){
+    $('#modals').click();
+    $('.worker_id').val($(this).attr('uid'));
+    $('.worker_name').val($(this).attr('n'));
+    $('.worker_type').val($(this).attr('t'));
+    $('.salary').val($(this).attr('s'));
+    //document.getElementById('date_of_joining').valueAsDate = $(this).attr('d');
+    
+    $('.qualifications').val($(this).attr('q'));
+    $('.street_no').val($(this).attr('sn'));
+    $('.street_name').val($(this).attr('snm'));
+    $('.apt_number').val($(this).attr('apt'));
+    $('.city').val($(this).attr('c'));
+    $('.state').val($(this).attr('st'));
+    $('.gender').val($(this).attr('g'));
+    $('.account_no').val($(this).attr('a'));
+    $('.work_duration').val($(this).attr('wd'));
+    $('.contact').val($(this).attr('cont'));
+    $('.date_of_joining').val($(this).attr('d'));
+    
+	});
+
+  $('#submitupdate').click(function(){
+    $.ajax({
+          type:"POST",
+          url:"{% url 'manager:viewworkers' %}",
+          data:{"worker_name":$(".worker_name").val(),"worker_type":$(".worker_type").val(),"date_of_joining":$(".date_of_joining").val(),"qualifications":$(".qualifications").val(),"street_no":$(".street_no").val(),"street_name":$(".street_name").val(),"apt_number":$(".apt_number").val(),
+          "city":$(".city").val(),"state":$("state").val(),"gender":$(".gender").val(),"account_no":$(".account_no").val(),"work_duration":$(".work_duration").val(),"worker_id":$(".worker_id").val(),"csrfmiddlewaretoken":"{{csrf_token}}"},
+      }).done(function(request){
+        window.location.href="{% url 'manager:viewworkers' %}";
+          
+      }).fail(function(){
+        window.location.href="{% url 'manager:viewworkers' %}";
+      });
+    
+  });
+  $('.worker_delete').click(function(){
+    $.ajax({
+          type:"POST",
+          url:"{% url 'manager:viewworkers' %}",
+          data:{"workerid":$(this).attr('u'),"csrfmiddlewaretoken":"{{csrf_token}}"},
+      }).done(function(request){
+        window.location.href="{% url 'manager:viewworkers' %}";
+          
+      }).fail(function(){
+        window.location.href="{% url 'manager:viewworkers' %}";
+      });
+  });
+  $('.addworker').click(function(){
+    window.location.href="{% url 'manager:addworker' %}";
+  })
+</script>
+{% endblock %}

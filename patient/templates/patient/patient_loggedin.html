@@ -1,0 +1,228 @@
+{% extends 'patient\base.html' %}
+{% block title %} Hello {{ request.user.first_name }} {% load staticfiles %}{% endblock %}
+{% block body %}
+<section id="history">
+  <div class="agenda">
+  <div class="col-lg-12 col-md-12">
+      <div class="section-heading2" style="text-align: center;">
+        <h2>Your History</h2>
+        <hr class="line">
+        </div>
+  <div class="container" style="color:black;">
+        <div class="table-responsive">
+
+            <table class="table table-condensed table-bordered table-hover">
+                <thead class="thead-inverse">
+                    <tr>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Event</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for i in history %}
+                    <tr>
+                        <td class="agenda-date" class="active" rowspan="1">
+                            <div class="dayofmonth">{{ i.dt }}</div>
+                            <div class="dayofweek"></div>
+                            <div class="shortdate text-muted">{{ i.month }},{{ i.year }}</div>
+                        </td>
+                        <td class="agenda-date" class="active" rowspan="1">
+                            <div class="dayofmonth">{{ i.end_dt }}</div>
+                            <div class="dayofweek"></div>
+                            <div class="shortdate text-muted">{{ i.end_month }},{{ i.end_year }}</div>
+                        </td>
+                        <td class="agenda-events">
+                            <div class="agenda-event">
+                                <i class="glyphicon glyphicon-repeat text-muted" title="Repeating event"></i> 
+                                Disease: {{ i.disease_name }}, Details: {{ i.details }}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+    </div>
+
+</section>
+
+<section id="reports">
+    <div class="container">
+        <div class="section-heading2" style="text-align: center;">
+          <h2 style="color:black;">MyReports</h2>
+          <hr class="line">
+        </div>
+        <div class="container" style="color:black;">
+        </div>
+
+    </div>
+
+</section>
+<section id="notifications">
+    <div class="agenda">
+        <div class="col-lg-12 col-md-12">
+            <div class="section-heading2" style="text-align: center;">
+                <h2>Notifications</h2>
+                <hr class="line">
+            </div>
+            <div class="container" style="color:black;">
+                {% for i in notifications %}
+                    <div class="notif_{{ i.notification_id }}">
+                    <h3>{{ i.notification_message }}</h3>
+                    <button id="{{ i.notification_id }}" class="seen">SEEN</button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="previous_appts">
+<div class="container">
+    <div class="section-heading2" style="text-align: center;">
+      <h2 style="color:black">Previous Examinations and Appointments</h2>
+      <hr class="line">
+    </div>
+
+    <div class = "all_details">
+        <div class="table-responsive">
+
+            <table class="table table-condensed table-bordered table-hover" style="color:black;">
+                <thead class="thead-inverse">
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in previous_appointments %}
+                        <tr>
+                        <a href="{% url 'patient:appointmentdetails' i.id %}">
+                            <td class="agenda-date" class="active" rowspan="1">
+                            <div class="dayofmonth">{{ i.dt }}</div>
+                            <div class="dayofweek"></div>
+                            <div class="shortdate text-muted">{{ i.month }},{{ i.year }}</div>
+                            </td>
+                            <td class="agenda-name">
+                                {{i.appointment_time }}
+                            </td>
+                            <td class="agenda-types">
+                                <div class="agenda-type">
+                                    {{ i.department }}, {{ i.appointment_purpose }}
+                                </div>
+                            </td>
+                            </a>
+                        </tr>
+                    {% endfor %}
+                    {% for i in previous_examinations %}
+                        <tr>
+                            <td class="agenda-date" class="active" rowspan="1">
+                            <div class="dayofmonth">{{ i.dt }}</div>
+                            <div class="dayofweek"></div>
+                            <div class="shortdate text-muted">{{ i.month }},{{ i.year }}</div>
+                            </td>
+                            <td class="agenda-name">
+                                {{ i.start_time }}- {{ i.end_time }}
+
+                            </td>
+                            <td class="agenda-types">
+                                <div class="agenda-type">
+                                    {{ i.disease }}, 
+                                    {% if i.is_done == 1 %}
+                                        {{ i.Outcome }},{{ i.Treatment }}
+                                    {% else %}
+                                        This examination wasn't done.
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+</section>
+<section id="examinations">
+<div class="container">
+    <div class="section-heading2" style="text-align: center;">
+      <h2 style="color:black;">Upcoming Examinations and Appointments</h2>
+      <hr class="line">
+    </div>
+
+    <div class = "all_details">
+        <div class="table-responsive">
+
+            <table class="table table-condensed table-bordered table-hover" style="color:black;">
+                <thead class="thead-inverse">
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in upcoming_appointments %}
+                        <tr>
+                        <a href="{% url 'patient:appointmentdetails' i.id %}">
+                            <td class="agenda-date" class="active" rowspan="1">
+                            <div class="dayofmonth">{{ i.dt }}</div>
+                            <div class="dayofweek"></div>
+                            <div class="shortdate text-muted">{{ i.month }},{{ i.year }}</div>
+                            </td>
+                            <td class="agenda-name">
+                                {{i.appointment_time }}
+                            </td>
+                            <td class="agenda-types">
+                                <div class="agenda-type">
+                                    {{ i.department }}, {{ i.appointment_purpose }}
+                                </div>
+                            </td>
+                        </a>
+                        </tr>
+                    {% endfor %}
+                    {% for i in upcoming_examinations %}
+                        <tr>
+                            <td class="agenda-date" class="active" rowspan="1">
+                            <div class="dayofmonth">{{ i.dt }}</div>
+                            <div class="dayofweek"></div>
+                            <div class="shortdate text-muted">{{ i.month }},{{ i.year }}</div>
+                            </td>
+                            <td class="agenda-name">
+                                {{ i.start_time }}- {{ i.end_time }}
+                            </td>
+                            <td class="agenda-types">
+                                <div class="agenda-type">
+                                    {{ i.disease }}, {{ i.Outcome }},{{ i.Treatment }}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+</section>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    $('.seen').click(function(){
+        var v = $(this).attr('id');
+        $.ajax({
+            type:"POST",
+            url:"{% url 'patient:index' %}",
+            data:{"seen":"True","id":$(this).attr('id'),"csrfmiddlewaretoken":"{{csrf_token}}"},
+        }).done(function(request){
+            $('.notif_'+ v).hide();
+        }).fail(function(request){
+
+        });
+    });
+ </script>
+{% endblock %}

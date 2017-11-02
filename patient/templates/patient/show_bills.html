@@ -1,0 +1,55 @@
+{% extends 'patient/base.html' %}
+{% block title %} patient Home {% load staticfiles %}{% endblock %}
+{% block body %}
+<div class="agenda">
+  <div class="col-lg-12 col-md-12">
+      <div class="section-heading2" style="text-align: center;">
+        <h2>Your Bills</h2>
+        <hr class="line">
+        </div>
+  <div class="container" style="color:black;">
+        <div class="table-responsive">
+
+            <table class="table table-condensed table-bordered table-hover">
+                <thead class="thead-inverse">
+                    <tr>
+                        <th>Bill Date</th>
+                        <th>Doc_Charges</th>
+                        <th>Room_Charges</th>
+                        <th>Medicine_Charges</th>
+                        <th>Service_Charges</th>
+                        <th>Pay</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for i in bills %}
+                    <tr>
+                        <td class="agenda-date" class="active" rowspan="1">
+                            {{ i.bill_date }}
+                        </td>
+                        <td class="agenda-events">
+                        {{i.doc_charges}}
+                        </td>
+                        <td class="agenda-events">
+                        {{i.room_charges}}
+                        </td>
+                        <td class="agenda-events">
+                        {{i.medicine_charges}}
+                        </td>
+                        <td class="agenda-events">
+                            <div class="agenda-event">
+                              {{i.service_charges}}
+                            </div>
+                        </td>
+                        <td>
+                          <button class="btn btn-success">Pay</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}

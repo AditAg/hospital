@@ -1,0 +1,393 @@
+{% extends 'doctor/base.html' %}
+{% block title %} Hello doctor {% load staticfiles %}{% endblock %}
+{% block body %}
+<section id="schedule">
+  <div class="agenda">
+  <div class="col-lg-12 col-md-12">
+        <div class="section-heading2" style="text-align: center;">
+        <h2>Your Schedule</h2>
+        <hr class="line">
+        </div>
+  <div class="container" style="color:black;">
+        <div class="table-responsive">
+
+            <table class="table table-condensed table-bordered table-hover">
+                <thead class="thead-inverse">
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Event</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for i in schedule %}
+                    <tr>
+                        <td class="agenda-date" class="active" rowspan="1">
+                            <div class="dayofmonth">{{ i.dt }}</div>
+                            <div class="dayofweek">{{ i.day }}</div>
+                            <div class="shortdate text-muted">{{ i.month }},{{ i.year }}</div>
+                        </td>
+                        <td class="agenda-time">
+                            {{ i.start_time }}-{{ i.end_time }}
+                        </td>
+                        <td class="agenda-events">
+                            <div class="agenda-event">
+                                <i class="glyphicon glyphicon-repeat text-muted" title="Repeating event"></i> 
+                                {{i.message }}
+                                {% if i.is_appointment %}
+                                    <!--<button class="btn btn-success">View Details</button>-->
+                                    <a href = "{% url 'doctor:appointmentdetails' i.appointment_id %}"><button class="btn btn-success">View Details</button></a>
+
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+
+                    <!-- Multiple events in a single day (note the rowspan)
+                    <tr>
+                        <td class="agenda-date" class="active" rowspan="2">
+                            <div class="dayofmonth">27</div>
+                            <div class="dayofweek">Thursday</div>
+                            <div class="shortdate text-muted">September, 2017</div>
+                        </td>
+                        <td class="agenda-time">
+                            8:00 - 9:00 AM
+                        </td>
+                        <td class="agenda-events">
+                            <div class="agenda-event">
+                                Free
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="agenda-time">
+                            10:15 AM - 12:00 PM
+                        </td>
+                        <td class="agenda-events">
+                            <div class="agenda-event">
+                                Meeting with Hospital Executives
+                            </div>
+                        </td>
+                    </tr>
+                    -->
+
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+    </div>
+
+</section>
+
+<section id="patient_details" style="">
+    <div class="container">
+        <div class="section-heading2" style="text-align: center;">
+          <h2 style="color:black;"> Your Patients </h2>
+          <hr class="line">
+        </div>
+
+        <div class = "all_details">
+               <div class="table-responsive">
+
+            <table class="table table-condensed table-bordered table-hover" style="color:black;">
+                <thead class="thead-inverse">
+                    <tr>
+                        <th>Patient ID</th>
+                        <th>Patient Name</th>
+                        <th>DOB</th>
+                        <th>BloodGroup</th>
+                        <th>Address</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for i in patients %}
+                    <tr><a href="">
+                        <td class="agenda-ID" class="active" rowspan="1">
+                            {{ i.patient_id }}
+                        </td>
+                        <td class="agenda-name">
+                            {{ i.first_name }} &nbsp;{{ i.last_name }}
+                        </td>
+                        <td class="agenda-name">
+                            {{ i.DOB }}
+                        </td>
+                        <td class="agenda-name">
+                            {{ i.BloodGroup }}
+                        </td>
+                        <td class="agenda-types">
+                            <div class="agenda-type">
+                                {{ i.Street_no }},{{ i.Street_Name }},{{ Apt_Number }},{{ i.City }},{{ i.State }}
+                            </div>
+                        </td>
+                        </a>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        </div>
+
+    </div>
+
+</section>
+
+<section id="booked_appointments">
+<div class="container">
+        <div class="section-heading2" style="text-align: center;">
+          <h2 style="color:black;"> Appointments </h2>
+          <hr class="line">
+        </div>
+
+        <div class = "all_details">
+               <div class="table-responsive">
+
+            <table class="table table-condensed table-bordered table-hover" style="color:black;">
+                <thead class="thead-inverse">
+                    <tr>
+                        <th>Appointment_Date</th>
+                        <th>Appointment_Time</th>
+                        <th>Appointment_Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for i in appointments %}
+                    <tr><a href="{% url 'doctor:appointmentdetails' i.appointment_id %}">
+                        <td class="agenda-ID" class="active" rowspan="1">
+                            {{ i.date }}
+                        </td>
+                        <td class="agenda-name">
+                            {{ i.start_time }}-{{ i.end_time }}
+                        </td>
+                        <td class="agenda-types">
+                            <div class="agenda-type">
+                                {{ i.appointment_purpose }}
+                            </div>
+                        </td>
+                        </a>
+                    </tr>
+
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        </div>
+
+    </div>
+</section>
+<section id="booked_examinations">
+<div class="agenda">
+  <div class="col-lg-12 col-md-12">
+        <div class="section-heading2" style="text-align: center;">
+        <h2>Upcoming Examinations</h2>
+        <hr class="line">
+        </div>
+  <div class="container" style="color:black;">
+        <div class="table-responsive">
+
+            <table class="table table-condensed table-bordered table-hover">
+                <thead class="thead-inverse">
+                    <tr>
+                        <th>Examination_Date</th>
+                        <th>Examination_Time</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for i in upcoming_examinations %}
+                    <tr>
+                        <td class="agenda-date" class="active" rowspan="1">
+                            <div class="dayofmonth">{{ i.dt }}</div>
+                            <div class="dayofweek"></div>
+                            <div class="shortdate text-muted">{{ i.month }},{{ i.year }}</div>
+                        </td>
+                        <td class="agenda-time">
+                            {{ i.start_time }}-{{ i.end_time }}
+                        </td>
+                        <td class="agenda-events">
+                            <div class="agenda-event">
+                                <i class="glyphicon glyphicon-repeat text-muted" title="Repeating event"></i> 
+                                {{i.message }}
+                                {{ i.disease_name }}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+    </div>
+</section>
+
+<section id="examinations_done">
+<div class="agenda">
+  <div class="col-lg-12 col-md-12">
+        <div class="section-heading2" style="text-align: center;">
+        <h2>Examinations_Done</h2>
+        <hr class="line">
+        </div>
+  <div class="container" style="color:black;">
+        <div class="table-responsive">
+
+            <table class="table table-condensed table-bordered table-hover">
+                <thead class="thead-inverse">
+                    <tr>
+                        <th>Examination_Date</th>
+                        <th>Examination_Time</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                {% for xx,i in examinations %}
+                    <tr>
+                        <td class="agenda-date" class="active" rowspan="1">
+                            <div class="dayofmonth">{{ i.dt }}</div>
+                            <div class="dayofweek"></div>
+                            <div class="shortdate text-muted">{{ i.month }},{{ i.year }}</div>
+                        </td>
+                        <td class="agenda-time">
+                            {{ i.start_time }}-{{ i.end_time }}
+                        </td>
+                        <td class="agenda-events">
+                            <div class="agenda-event">
+                                <i class="glyphicon glyphicon-repeat text-muted" title="Repeating event"></i> 
+                                {{i.message }}
+                                {{ i.disease_name }}
+                                {% ifequal i.Outcome None %}
+                                <button class="btn btn-success complete2" s="{{ i.start_time }}" e="{{ i.end_time }}" d="{{ i.examination_date }}" patient="{{ i.username }}", uid = "{{ xx }}"> Complete the information</button>
+                                {% else %}
+                                {{i.Outcome}},{{i.Treatment}}
+                                {% endifequal %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+    </div>
+</section>
+<style>
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 100; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgb(0,0,0); 
+    background-color: rgba(0,0,0,0.4); 
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+</style>
+<div id="Modal3" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+
+         <form method="post" onsubmit="return false;">
+            {% csrf_token %}
+            <textarea class="Outcome" name="Outcome" id="Outcome"></textarea>
+            <label for="Outcome">Outcome</label><br>
+            <textarea class="Treatment" name="Treatment" id="Treatment"></textarea>
+            <label for="Treatment">Treatment</label><br>
+            
+            <input class="examination_date" name="examination_date" disabled="true">
+            <label for="examination_date">Examination Date</label><br>
+             <input class="starttime_x" name="start_time" disabled="true">
+            <label for="start_time">Start Time</label><br>
+            <input class="endtime_x" name="end_time" disabled="true">
+            <label for="end_time">End Time</label><br>
+            <input class="patient_id" name = "patient_id" disabled="true">
+            <label for="patient_id">Patient_Username</label><br>
+            <input class="uid" hidden disabled="true">
+            <input type="submit" id="submitreschedule2">
+         </form>
+
+    </div>
+</div>
+<button id="openmodal2" hidden></button>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $('.complete2').click(function(){   
+        $('#openmodal2').click();
+        $(".examination_date").val($(this).attr('d'));
+        $(".starttime_x").val($(this).attr('s'));
+        $(".endtime_x").val($(this).attr('e'));
+        $(".patient_id").val($(this).attr('patient'));
+        $(".uid").val($(this).attr('uid'));
+    });
+</script>
+
+<script>
+    
+    var btn = document.getElementById("openmodal2");
+    var modal = document.getElementById("Modal3");
+    var span = document.getElementsByClassName("close")[0];
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
+<script>
+    $('#submitreschedule2').click(function(){
+        
+        //alert($(".starttime_x").val());
+        var v = $('.uid').val();
+        $.ajax({
+            type:"POST",
+            url:"{% url 'doctor:index' %}",
+            data:{"start_time":$(".starttime_x").val(),"end_time":$(".endtime_x").val(),"examination_date":$(".examination_date").val(),"patient_id":$(".patient_id").val(),"Outcome":$(".Outcome").val(),"Treatment":$(".Treatment").val(),
+            "csrfmiddlewaretoken":"{{csrf_token}}"},
+        }).done(function(request){
+            $('#button_'+ v).hide();
+            window.location.href="{% url 'doctor:index' %}#examinations_done";
+        }).fail(function(){
+
+        });
+    });
+
+</script>
+
+{% endblock %}
+

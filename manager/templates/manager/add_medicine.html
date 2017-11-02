@@ -1,0 +1,21 @@
+{% extends 'manager/base.html' %}
+{% block title %} Manager Home {% load staticfiles %}{% endblock %}
+{% block body %}
+<div class="container" style="float:right;width:75%;">
+<form id="purchase" method="post" action="{% url 'manager:addmedicine' %}">
+   {% csrf_token %}
+  <div class="container2">
+    <div class="head">
+      <h2>Add Medicine</h2>
+    </div>
+    <label for="medicine_name">Medicine_Name</label>
+    <input type="text" name="medicine_name"/><br/>
+    <label for="other_details">Other_details</label>
+    <input type="text" name="other_details" /><br/>
+    <button type="submit">
+      Add
+    </button>
+  </div>
+</form>
+</div>
+{% endblock %}

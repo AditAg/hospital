@@ -1,0 +1,31 @@
+{% extends 'manager/base.html' %}
+{% block title %} Manager Home {% load staticfiles %}{% endblock %}
+{% block body %}
+<div class="container" style="float:right;width:75%;">
+	<table id="docs">
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>DOB</th>
+    <th>Address</th>
+    <th>Further Details</th>
+  </tr>
+  {% for i in patient_details %}
+  		<tr>
+  		<td>{{ i.first_name}} {{ i.second_name }}</td>
+  		<td>{{ i.type }}</td>
+  		<td>{{ i.DOB }}</td>
+  		<td>{{ i.Apt_Number }},{{ i.Street_no }},{{i.Street_Name }},{{ i.City }}, {{ i.State }}. {{ i.Zip_code }} {{ i.contact }}</td>
+  		<td><button class="btn btn-success patient_details" u="{{ i.patient_id }}"> More Details</button></td>
+  		</tr>
+  {% endfor %}
+ </table>
+ </div>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+	$('.patient_details').click(function(){
+		var v = $(this).attr('u');
+		
+	})
+</script>
+{% endblock %}

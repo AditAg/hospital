@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>{% block title %}View 1{% endblock %}</title>
+    {% load staticfiles %}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+  <link href="{% static 'css/font-awesome.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/chocolat.css' %}" type="text/css">
+  <link rel="stylesheet" href="{% static 'css/patient_style.css' %}">
+
+  <link href="//fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i" rel="stylesheet">
+  <link href='//fonts.googleapis.com/css?family=Roboto+Condensed:400,700italic,700,400italic,300italic,300' rel='stylesheet' type='text/css'>
+<!-- //font -->
+
+</head>
+<body>
+<!--<div id="preloader">
+      <div id="status">&nbsp;</div>
+</div>-->
+<a class="scrollToTop" href="#"><i class="fa fa-heartbeat"></i></a>
+
+<div class="header-top">
+  <div class="header">
+    <div class="header-top-info">
+      <nav class="navbar navbar-default">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <div class="agileits-logo">
+            <h1><a href="{% url 'mainpage:index' %}">CNH</a></h1>
+          </div>
+        </div>
+	        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
+          <nav>
+            <ul class="nav navbar-nav">
+              <li><a href="{% url 'mainpage:index' %}">Hospital</a></li>
+              <li class="active"><a href="{% url 'patient:index' %}">Home</a></li>
+              <li><a href="{% url 'patient:change' %}">My details</a></li>
+              <li><a href="{% url 'patient:index' %}#history" class="scroll">Disease_History</a></li>
+              <li><a href="{% url 'patient:enterhistory' %}">Fill History</a></li>
+              <li><a href="{% url 'patient:index' %}#reports" class="scroll">My Reports</a></li>
+              <li><a href="{% url 'patient:index' %}#notifications" class="scroll">Notifications</a></li>
+              <li><a data-toggle="modal" data-target="#myModal3" href="" data-hover="Examination" class="scroll">Request Examination</a></li>
+            <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content" style="background:rgba(5,5,5,0.5);">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                      <h4 class="modal-title" id="myModalLabel">Examination Details</h4>
+                    </div>
+                    <div class="modal-body">
+                      <div class="appointment-area">
+                        <form class="appointment-form" method="post" action="{% url 'patient:requestexamination' %}">
+                          {% csrf_token %}
+                          <div class="row">
+                            <div class="col-md-4 col-sm-4">
+                              <label class="control-label">Examination Date <span class="required">*</span>
+                              </label>
+                              <input type="date" class="wp-form-control wpcf7-text" placeholder="yyyy-mm-dd" name = "examination_date">
+                            </div>
+                            <div class="col-md-4 col-sm-4">
+                              <label class="control-label">Examination Time <span class="required">*</span>
+                              </label>
+                              <input type="time" class="wp-form-control wpcf7-text" placeholder="hh:mm" name = "examination_time">
+                            </div>
+                            <div class="col-md-4 col-sm-4">
+                              <label class="control-label">Examination Lab <span class="required">*</span>
+                              </label>
+                              <select class="wp-form-control wpcf7-select" name = "lab">
+
+                                {% for i in lab %}
+                                <option value="{{ i.lab_id }}">{{ i.lab_name }}</option>
+                                {% endfor %}
+                              </select> 
+                            </div>
+                            <div class="col-md-4 col-sm-4">
+                              <label class="control-label">Disease<span class="required">*</span>
+                              </label>
+                              <select class="wp-form-control wpcf7-select" name = "disease">
+
+                                {% for i in disease %}
+                                <option value="{{ i.disease_id }}">{{ i.disease_name }}</option>
+                                {% endfor %}
+                              </select> 
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class = "col-md-6 col-sm-6">
+                            <label class="control-label" >Examination_Type<span class="required">*</span></label>
+                            <input type="text" class="wp-form-control wpcf7-text" placeholder="Subject" name = "Examination_Type">
+                            <label class="control-label">Examination_Purpose<span class="required">*</span></label>
+                            <textarea class="wp-form-control wpcf7-textarea" cols="70" rows="10" placeholder="Purpose" name="Examination_Purpose"></textarea>
+                            </div>
+                        </div>
+                         <button class="btn btn-success" type="submit"><i class="button__icon fa fa-share"></i><span>Request</span></button>
+                        </form>
+                      </div>
+                    </div>                    
+                  </div>
+                </div>
+              </div>
+              <li><a data-toggle="modal" data-target="#myModal2" href="" data-hover="Appointment" class="scroll">Book Appointment</a></li>
+            <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content" style="background:rgba(5,5,5,0.5);">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                      <h4 class="modal-title" id="myModalLabel">Appointment Details</h4>
+                    </div>
+                    <div class="modal-body">
+                      <div class="appointment-area">
+                        <form class="appointment-form" method="post" action="{% url 'patient:bookappointment' %}">
+                          {% csrf_token %}
+                          <div class="row">
+                            <div class="col-md-4 col-sm-4">
+                              <label class="control-label">Appointment Date <span class="required">*</span>
+                              </label>
+                              <input type="date" class="wp-form-control wpcf7-text" placeholder="yyyy-mm-dd" name = "appointment_date">
+                            </div>
+                            <div class="col-md-4 col-sm-4">
+                              <label class="control-label">Appointment Time <span class="required">*</span>
+                              </label>
+                              <input type="time" class="wp-form-control wpcf7-text" placeholder="hh:mm" name = "appointment_time">
+                            </div>
+                            <div class="col-md-4 col-sm-4">
+                              <label class="control-label">Select Department <span class="required">*</span>
+                              </label>
+                              <select class="wp-form-control wpcf7-select" name = "department">
+
+                                {% for i in specialities %}
+                                <option value="{{ i.label }}">{{ i.speciality }}</option>
+                                {% endfor %}
+                              </select> 
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class = "col-md-6 col-sm-6">
+                            <label class="control-label">Appointment_Purpose<span class="required">*</span></label>
+                            <input type="text" class="wp-form-control wpcf7-text" placeholder="Subject" name = "Appointment_Purpose">
+                            <label class="control-label" >Comments</label>
+                            <textarea class="wp-form-control wpcf7-textarea" cols="70" rows="10" placeholder="What would you like to tell us" name="comments"></textarea>
+                            </div>
+                        </div>
+                         <button class="btn btn-success" type="submit"><i class="button__icon fa fa-share"></i><span>Book Appointment</span></button>
+                        </form>
+                      </div>
+                    </div>                    
+                  </div>
+                </div>
+              </div>
+
+              <li><a href="{% url 'patient:index' %}#previous_appts" class="scroll">Previous Appointments</a></li>
+              <li><a href="{% url 'patient:index' %}#examinations" class="scroll">Upcoming Examinations</a></li>
+              <li><a href="{% url 'patient:showbills' %}" class="scroll"> My Bills</a></li>
+              <li><a href="{% url 'patient:logout' %}">Logout</a></li>
+            </ul>
+          </nav>
+        </div>
+        <!-- /.navbar-collapse -->
+      </nav>
+    </div>
+  </div>
+</div>
+
+{% block body %}
+
+{% endblock %}
+<footer id="footer">
+      <!-- Start Footer Top -->
+      <div class="footer-top">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-3">
+              <div class="single-footer-widget">
+                <div class="section-heading">
+                <h2>About Us</h2>
+                <hr class="line">
+              </div>
+              <p>--------------------------------------------------------------- -------------------- --------- - - - - - - - </p>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+              <div class="single-footer-widget">
+              <div class="links">
+
+              <ul class="footer-service">
+                <li><a href="#"><span class="fa fa-check"></span>Home</a></li>
+                <li><a href="#"><span class="fa fa-check"></span>Contact Us</a></li>
+                <li><a href="#"><span class="fa fa-check"></span>Services</a></li>
+                <li><a href="#"><span class="fa fa-check"></span>FAQ</a></li>
+              </ul>
+              </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+              <div class="single-footer-widget">
+                <div class="section-heading">
+                <h2>Social Media</h2>
+                <div class="line"></div>
+              </div>
+                <div id="socialMedia" class="span3 pull-right">
+                  <h5>SOCIAL MEDIA </h5>
+                  <a href="#"><img width="60" height="60" src="{% static 'images/facebook.png' %}" title="facebook" alt="facebook"/></a>
+                  <a href="#"><img width="60" height="60" src="{% static 'images/twitter.png' %}" title="twitter" alt="twitter"/></a>
+                  <a href="#"><img width="60" height="60" src="{% static 'images/youtube.png' %}" title="youtube" alt="youtube"/></a>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+              <div class="single-footer-widget">
+                <div class="section-heading">
+                <h2>Contact Info</h2>
+                <div class="line"></div>
+              </div>
+              <p>Our contact details are:</p>
+              <address class="contact-info">
+                <p><span class="fa fa-home"></span>Chirag Nursing Home, Opp. Balaji Mandir, Banbata Ganj, Moradabad, U.P., India</p>
+                <p><span class="fa fa-phone"></span>7599292732</p>
+                <p><span class="fa fa-envelope"></span>adit.agarwal.cse15@itbhu.ac.in</p>
+              </address>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Start Footer Middle -->
+      <div class="footer-middle">
+        <div class="container">
+          <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <div class="footer-copyright">
+              <p>&copy; Copyright 2015 <a href="{% url 'mainpage:index' %}">Chirag Nursing Home</a></p>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <div class="footer-social">
+                <a href="#"><span class="fa fa-facebook-square"></span></a>
+                <a href="#"><span class="fa fa-twitter-square"></span></a>
+                <a href="#"><span class="fa fa-google-plus"></span></a>
+                <a href="#"><span class="fa fa-linkedin"></span></a>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </footer>
+
+    </body>
+    </html>
+
