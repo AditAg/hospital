@@ -25,7 +25,7 @@ SECRET_KEY = 'mkavrw63bo7lb(m_@5&cmi#=4%ucd=e58si5*acfzs1h%(c3f='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1','aditagarwal.pythonanywhere']
 
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
 
