@@ -316,8 +316,9 @@ def Set(request):
                                         port=587
                                         sender='adit.agarwal.cse15@itbhu.ac.in'
                                         passwd = 'adit123@#06A'
+                                        print("Hello")
                                         try:
-                                            smtpobj=smtplib.SMTP(server,port)
+                                            smtpobj=smtplib.SMTP('smtp.gmail.com:587')
                                             print("Done")
                                             smtpobj.ehlo()
                                             print("Done")
@@ -425,7 +426,25 @@ def Set(request):
                                         cursor.execute('SELECT * from Unregistered_Patients where email =%s',[register[0]['patient']])
                                         patient_details = dictfetchall(cursor)
                                         cursor.execute('DELETE FROM UnregisteredAppointments WHERE appointment_id=%s',[register[0]['appointment_id']])
-                                        #use patient_detials to send email
+                                        TO = patient_details[0]['patient']
+                                        server='smtp.gmail.com'
+                                        port=587
+                                        sender='adit.agarwal.cse15@itbhu.ac.in'
+                                        passwd = 'adit123@#06A'
+                                        print("Hello")
+                                        try:
+                                            smtpobj=smtplib.SMTP('smtp.gmail.com:587')
+                                            print("Done")
+                                            smtpobj.ehlo()
+                                            print("Done")
+                                            smtpobj.starttls()
+                                            print("Done")
+                                            smtpobj.login(sender,passwd)
+                                            print("Successfully logged in")
+                                            message = "Your appointment from" + i['start_time'] + " to " + i['end_time'] + "has been cancelled. Please submit again."
+                                            smtpobj.sendmail(sender,TO,message)
+                                        except:
+                                            continue
 
 
                                     

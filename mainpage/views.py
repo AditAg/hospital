@@ -343,8 +343,8 @@ def book_appointment(request):
                         #name = cursor2.fetchall()
                         return render(request,'mainpage/Thank_you.html',{'appointment_time':appointment_time,'name':name[0]})
                 for i in docs:
-                    cursor.execute('SELECT MIN(start_time) FROM Schedule WHERE doctor_id=%s and date=%s and (start_time>=%s and start_time<=%s)',[i[0],appointment_date,appointment_time,add(appointment_time,15)])
-                    r = dictfetchall(cursor)
+                    cursor2.execute('SELECT MIN(start_time) FROM Schedule WHERE doctor_id=%s and date=%s and (start_time>=%s and start_time<=%s)',[i[0],appointment_date,appointment_time,add(appointment_time,15)])
+                    r = dictfetchall(cursor2)
                     cursor2.execute('SELECT * from Schedule where doctor_id = %s and date = %s and start_time=%s and (start_time >=%s and '
                                 'NOT EXISTS(SELECT * from Schedule where doctor_id = %s and date = %s and (end_time>=%s and end_time <=%s)))'
                                 ,[i[0],appointment_date,r[0]['MIN(start_time)'],add(appointment_time,-15),i[0],appointment_date,add(appointment_time,-15),r[0]['MIN(start_time)']])
@@ -376,7 +376,7 @@ def book_appointment(request):
                             #name = cursor2.fetchall()
                             return HttpResponse("Thank you your appointment has been booked at 15 minute before " + str(schedule['start_time']) + " with doctor <a href = '{% url 'mainpage:aboutus' %}'>" + name[0][0] + "</a>. Return to the <a href = {% url 'mainpage:index' %}> Homepage here</a>.")
                     cursor2.execute('SELECT MAX(end_time) FROM Schedule WHERE doctor_id = %s and date = %s and (start_time<=%s and end_time>%s)',[i[0],appointment_date,appointment_time,appointment_time])
-                    r = dictfetchall(cursor)
+                    r = dictfetchall(cursor2)
                     cursor2.execute('SELECT * from Schedule where doctor_id = %s and date = %s and end_time=%s and (start_time<=%s and end_time>%s and end_time<=%s and NOT EXISTS(SELECT * FROM Schedule where doctor_id = %s and date = %s and start_time>=%s and start_time<=%s))',
                                         [i[0],appointment_date,r[0]['MAX(end_time)'],appointment_time,appointment_time,add(appointment_time,15),i[0],appointment_date,r[0]['MAX(end_time)'],add(r[0]['MAX(end_time)'],15)])
                     pc = dictfetchall(cursor2)
@@ -391,7 +391,8 @@ def book_appointment(request):
                             cursor2.execute('SELECT appointment_id from UnregisteredAppointments WHERE patient=%s',[email])
                             d = dictfetchall(cursor2)
                             cursor2.execute('INSERT INTO Appointments(unregistered_id,is_registered) VALUES (%s,%s)',[d[0]['appointment_id'],'0'])
-                            d =dictfetchall(cursor2)
+                            cursor2.execute('SELECT LAST_INSERT_ID();')
+                            d = dictfetchall(cursor2)
                             print(d)
                             cursor2.execute('INSERT INTO Schedule(start_time,end_time,date,message,doctor_id,is_appointment,appointment_id) VALUES(%s,%s,%s,%s,%s,%s,%s)',[schedule['end_time'],add(schedule['end_time'],15),appointment_date,appointment_purpose,i[0],'1',d[0]['LAST_INSERT_ID()']])
                             transaction.commit()
