@@ -96,11 +96,11 @@ except ImportError:
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'DBMS',
-        'USER':'root',
+        'NAME': 'aditagarwal$DBMS',
+        'USER':'aditagarwal',
         'PASSWORD':'pass1234@#06A',
-        'HOST':'localhost',
-        'PORT':3307,
+        'HOST':'aditagarwal.mysql.pythonanywhere-services.com',
+        'PORT':,
     }
 }
 
