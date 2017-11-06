@@ -110,9 +110,9 @@ def index(request):
                 year = now.year
                 month = now.month
                 day = now.day
-                cursor.execute('SELECT * FROM examination,diseases,patients,auth_user WHERE doctor_id=%s and Examination.disease = Diseases.disease_id and Examination.patient_id=Patients.patient_id and Patients.user_id = auth_user.id and ((Examination.examination_date < cast(now() as date)) OR ((Examination.examination_date=cast(now() as date)) AND (Examination.start_time<cast(now() as time))))',[doctor_details[0]['doctor_id']])
+                cursor.execute('SELECT * FROM examination,diseases,patients,auth_user WHERE doctor_id=%s and examination.disease = diseases.disease_id and examination.patient_id=patients.patient_id and patients.user_id = auth_user.id and ((examination.examination_date < cast(now() as date)) OR ((examination.examination_date=cast(now() as date)) AND (examination.start_time<cast(now() as time))))',[doctor_details[0]['doctor_id']])
                 examinations = dictfetchall(cursor)
-                cursor.execute('SELECT * FROM examination,diseases,patients,auth_user WHERE doctor_id=%s and Examination.disease = Diseases.disease_id and Examination.patient_id=Patients.patient_id and Patients.user_id = auth_user.id and ((Examination.examination_date >cast(now() as date)) OR (Examination.examination_date = cast(now() as date) AND Examination.start_time>=cast(now() as time)))',[doctor_details[0]['doctor_id']])
+                cursor.execute('SELECT * FROM examination,diseases,patients,auth_user WHERE doctor_id=%s and examination.disease = diseases.disease_id and examination.patient_id=patients.patient_id and patients.user_id = auth_user.id and ((examination.examination_date >cast(now() as date)) OR (examination.examination_date = cast(now() as date) AND examination.start_time>=cast(now() as time)))',[doctor_details[0]['doctor_id']])
                 upcoming_examinations = dictfetchall(cursor)
                 cursor.execute('SELECT * from schedule WHERE doctor_id=%s and is_appointment=true and date >= cast(now() as date) and date<= cast((now() + interval 2 day) as date)',[doctor_details[0]['doctor_id']])
                 appts = dictfetchall(cursor)
@@ -126,7 +126,7 @@ def index(request):
                 patients = dictfetchall(cursor)
                 patient_det = []
                 for i in patients:
-                    cursor.execute('SELECT * from patients,auth_user WHERE patient_id=%s and Patients.user_id=auth_user.id',[i['patient_id']])
+                    cursor.execute('SELECT * from patients,auth_user WHERE patient_id=%s and patients.user_id=auth_user.id',[i['patient_id']])
                     pp = dictfetchall(cursor)
                     patient_det.append(pp[0])
                 context = {'patients':patient_det,'doctor':doctor_details[0],'schedule':schedule,'appointments':appts,'examinations':exams,'upcoming_examinations':upcoming_examinations,}
@@ -350,7 +350,7 @@ def Set(request):
                             elif i['is_examination']:
                                 cursor.execute('SELECT * from examination WHERE doctor_id=%s and examination_date=%s and start_time=%s and end_time=%s',[doctor[0]['doctor_id'],i['date'],i['start_time'],i['end_time']])
                                 exam = dictfetchall(cursor)[0]
-                                cursor.execute('SELECT * from patients,auth_user WHERE patient_id=%s and Patients.user_id = auth_user.id',[exam['patient_id']])
+                                cursor.execute('SELECT * from patients,auth_user WHERE patient_id=%s and patients.user_id = auth_user.id',[exam['patient_id']])
                                 z=dictfetchall(cursor)
                                 examinations_to_reschedule.append((no,exam,z))
                                 no = no + 1
@@ -416,7 +416,7 @@ def Set(request):
                                         patient_details = dictfetchall(cursor)
                                         
                                         cursor.execute('DELETE FROM registeredappointments WHERE id=%s',[register[0]['id']])
-                                        cursor.execute('SELECT doctor_id,username from doctor,auth_user WHERE doctor_id = %s and Doctor.user_id = auth_user.id',[register[0]['doctor_id']])
+                                        cursor.execute('SELECT doctor_id,username from doctor,auth_user WHERE doctor_id = %s and doctor.user_id = auth_user.id',[register[0]['doctor_id']])
                                         doctor_details = dictfetchall(cursor)
                                         notification_message = "Your appointment dated " + str(i['date']) + " from " + str(i['start_time']) + " to " + i['end_time'] + "with the doctor "  + doctor_details[0]['username'] + " has been cancelled as the doctor has some important work. Book an appointment again for some other time"
                                         cursor.execute('INSERT INTO notifications(notification_message,patient_id) VALUES(%s,%s)',[notification_message,patient_details[0]['patient_id']])
@@ -520,7 +520,7 @@ def check(request):
             if(len(z)==0):
                 cursor.execute('SELECT * from schedule WHERE doctor_id=%s and date=%s and start_time=%s and end_time=%s',[doctor_id,date_old,starttime_old,endtime_old])
                 i = dictfetchall(cursor)
-                cursor.execute('SELECT doctor_id,username from doctor,auth_user WHERE doctor_id = %s and Doctor.user_id = auth_user.id',[doctor_id])
+                cursor.execute('SELECT doctor_id,username from doctor,auth_user WHERE doctor_id = %s and doctor.user_id = auth_user.id',[doctor_id])
                 doctor_details = dictfetchall(cursor)
                 print(i,doctor_details,)
                 cursor.execute('UPDATE schedule SET start_time=%s,date=%s,end_time=%s WHERE doctor_id=%s and date=%s and start_time=%s and end_time=%s',[start_time,date,end_time,doctor_id,date_old,starttime_old,endtime_old])
@@ -583,7 +583,7 @@ def cancel(request):
                 patient_details = dictfetchall(cursor)
                 cursor.execute('SELECT * from auth_user where id=%s',[patient_details[0]['user_id']])
                 i = dictfetchall(cursor)
-                cursor.execute('SELECT doctor_id,username from doctor,auth_user WHERE doctor_id = %s and Doctor.user_id = auth_user.id',[p[0]['doctor_id']])
+                cursor.execute('SELECT doctor_id,username from doctor,auth_user WHERE doctor_id = %s and doctor.user_id = auth_user.id',[p[0]['doctor_id']])
                 doctor_details = dictfetchall(cursor)
                 notification_message = "Your appointment dated " + str(date) + " from " + str(start_time) + " to " + str(end_time) + "with the doctor " + str(doctor_details[0]['username']) + "has been cancelled as the doctor has some important work. Book an appointment again for some other time"
                 print(notification_message)
@@ -595,7 +595,7 @@ def cancel(request):
                 response_data={}
                 return HttpResponse(json.dumps(response_data),content_type='application/json')
             elif(p[0]['is_examination']):
-                cursor.execute('SELECT doctor_id from doctor WHERE doctor_id!=%s and lab=ANY(SELECT lab from Doctor WHERE doctor_id=%s) ',[doctor_id,doctor_id])
+                cursor.execute('SELECT doctor_id from doctor WHERE doctor_id!=%s and lab=ANY(SELECT lab from doctor WHERE doctor_id=%s) ',[doctor_id,doctor_id])
                 doctors = dictfetchall(cursor)
                 flag=0
                 cursor.execute('START TRANSACTION;')
@@ -617,7 +617,7 @@ def cancel(request):
                     message = "Your examination for " + date + " from "+ start_time + " to " + end_time + " with lab " + lab[0]['lab_name'] + " has been cancelled as no doctor is available."
                     cursor.execute('INSERT INTO notifications(notification_message,patient_id) VALUES(%s,%s)',[message,patient_details[0]['patient_id']])
                     cursor.execute('COMMIT;')
-                    cursor.execute('SELECT * from auth_user,patients WHERE Patients.user_id=auth_user.id and Patients.patient_id=%s',[patient_details[0]['patient_id']])
+                    cursor.execute('SELECT * from auth_user,patients WHERE patients.user_id=auth_user.id and patients.patient_id=%s',[patient_details[0]['patient_id']])
                     i = dictfetchall(cursor)
                     emailid= i[0]['email']
                     #send a mail to emailid that your appointment has been cancelled by the doctor as he is busy please book it again for some other time.

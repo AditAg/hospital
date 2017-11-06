@@ -18,7 +18,7 @@ def allservices(request):
 	service_details = dictfetchall(cursor)
 	print(lab_details,service_details)
 	context = {'labs':lab_details,'services':service_details}
-	return render(request,'services\services.html',context)
+	return render(request,'services/services.html',context)
 
 def lab_details(request,lab_id):
 	cursor = connection.cursor()
@@ -26,11 +26,11 @@ def lab_details(request,lab_id):
 	lab_details = dictfetchall(cursor)
 	print(lab_details)
 	context = {'lab': lab_details[0],}
-	return render(request,'services\lab_details.html',context)
+	return render(request,'services/lab_details.html',context)
 
 def rooms(request):
 	cursor = connection.cursor()
 	cursor.execute('SELECT DISTINCT Type from room')
 	types = dictfetchall(cursor)
 	context={'types':types,}
-	return render(request,'services\services.html',context)
+	return render(request,'services/services.html',context)
