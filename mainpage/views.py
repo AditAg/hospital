@@ -15,7 +15,7 @@ def dictfetchall(cursor):
     ]
 
 def index(request):
-    template = loader.get_template('mainpage\startpage.html')
+    template = loader.get_template('mainpage/startpage.html')
     #if request.user.is_authenticated:
     #   return HttpResponse(template.render({},request))
     #cursor.execute('CREATE TABLE IF NOT EXISTS User(ID INT PRIMARY KEY,Username VARCHAR(100) NOT NULL UNIQUE,'
@@ -29,9 +29,9 @@ def index(request):
         cursor.execute('CREATE TABLE IF NOT EXISTS room(room_id INTEGER PRIMARY KEY AUTO_INCREMENT,Floor Int, Type VARCHAR(100), Cost_Per_Day FLOAT, room_details TEXT)')
 
         cursor.execute('INSERT INTO lab(lab_name,lab_open_time,lab_close_time) SELECT * FROM ( SELECT "Operation Theatre","8:00","22:00") AS TMP'
-                       ' WHERE NOT EXISTS(SELECT lab_name,lab_open_time,lab_close_time FROM Lab WHERE lab_id=1) LIMIT 1;')
+                       ' WHERE NOT EXISTS(SELECT lab_name,lab_open_time,lab_close_time FROM lab WHERE lab_id=1) LIMIT 1;')
         cursor.execute('INSERT INTO lab(lab_name,lab_open_time,lab_close_time) SELECT * FROM ( SELECT "CT SCAN","10:00","22:00") AS TMP'
-                       ' WHERE NOT EXISTS(SELECT lab_name,lab_open_time,lab_close_time FROM Lab WHERE lab_id=2) LIMIT 1;')
+                       ' WHERE NOT EXISTS(SELECT lab_name,lab_open_time,lab_close_time FROM lab WHERE lab_id=2) LIMIT 1;')
         cursor.execute('CREATE TABLE IF NOT EXISTS doctor(doctor_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, user_id int NOT NULL, speciality varchar(10),'
                       'degree VARCHAR(30), Street_no VARCHAR(10), Street_Name VARCHAR(100),lab INT,'
                        'Apt_Number VARCHAR(10),City VARCHAR(20), State VARCHAR(20), Zip_code VARCHAR(10), Gender CHAR(1),Work_Duration VARCHAR(10),'
@@ -161,7 +161,7 @@ def aboutus(request):
             user_type=0
 
     context = {'doctors':doctor_details,'service_details':service_details,'lab_details':lab_details,'user_type':user_type,}
-    return render(request, 'mainpage\\about-us.html', context)
+    return render(request, 'mainpage/about-us.html', context)
 
 def Login(request):
     next = request.GET.get('next', str('/home/'))
@@ -176,7 +176,7 @@ def Login(request):
             try:
                 user = authenticate(username=username, password=password)
             except:
-                return render(request, "mainpage\login.html",
+                return render(request, "mainpage/login.html",
                               {'redirect_to': "mainpage:index", 'error_message': 'Sorry provide correct details','error':error})
 
             if user is not None:
@@ -200,7 +200,7 @@ def Login(request):
                 else:
                     return HttpResponse("Inactive User")
             else:
-                return render(request, "mainpage\login.html",
+                return render(request, "mainpage/login.html",
                               {'redirect_to': "mainpage:index", 'error_message': 'Sorry provide correct details'})
         cursor.execute('SELECT * FROM lab')
         lab_details = dictfetchall(cursor)
@@ -273,7 +273,7 @@ def register(request):
             user_type=0
 
     context={'service_details':service_details,'lab_details':lab_details,'user_type':user_type,}
-    return render(request,'mainpage\\register_choose.html',context)
+    return render(request,'mainpage/register_choose.html',context)
 
 def check(request):
     if request.method== 'POST':

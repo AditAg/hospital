@@ -27,7 +27,7 @@ class DoctorForm(forms.Form):
     speciality = forms.ChoiceField(choices=specialdd,required=True)
     degree = forms.CharField(max_length=30)
     with connection.cursor() as cursor:
-        cursor.execute('SELECT * from Lab')
+        cursor.execute('SELECT * from lab')
         doctor_lab = dictfetchall(cursor)
     labs=[]
     for obj in doctor_lab:
