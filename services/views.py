@@ -12,9 +12,9 @@ def dictfetchall(cursor):
 
 def allservices(request):
 	cursor = connection.cursor()
-	cursor.execute('SELECT * FROM Lab')
+	cursor.execute('SELECT * FROM lab')
 	lab_details = dictfetchall(cursor)
-	cursor.execute('SELECT * from Services')
+	cursor.execute('SELECT * from services')
 	service_details = dictfetchall(cursor)
 	print(lab_details,service_details)
 	context = {'labs':lab_details,'services':service_details}
@@ -22,7 +22,7 @@ def allservices(request):
 
 def lab_details(request,lab_id):
 	cursor = connection.cursor()
-	cursor.execute('SELECT * from Lab where lab_id=%s',[lab_id])
+	cursor.execute('SELECT * from lab where lab_id=%s',[lab_id])
 	lab_details = dictfetchall(cursor)
 	print(lab_details)
 	context = {'lab': lab_details[0],}
@@ -30,7 +30,7 @@ def lab_details(request,lab_id):
 
 def rooms(request):
 	cursor = connection.cursor()
-	cursor.execute('SELECT DISTINCT Type from Room')
+	cursor.execute('SELECT DISTINCT Type from room')
 	types = dictfetchall(cursor)
 	context={'types':types,}
 	return render(request,'services\services.html',context)

@@ -18,7 +18,7 @@ class DoctorForm(forms.Form):
     first_name = forms.CharField(max_length=100)
     last_name = forms.CharField(max_length=100)
     with connection.cursor() as cursor:
-        cursor.execute('SELECT * from DoctorSpeciality')
+        cursor.execute('SELECT * from doctorspeciality')
         doctor_specialities = dictfetchall(cursor)
     specialities=[]
     for obj in doctor_specialities:

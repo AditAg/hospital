@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+    from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import View
 from .forms import PatientForm
@@ -35,7 +35,7 @@ def index(request):
             notif_id=request.POST.get('id')
             cursor = connection.cursor()
             cursor.execute('START TRANSACTION;')
-            cursor.execute('DELETE FROM Notifications WHERE notification_id = %s',[notif_id])
+            cursor.execute('DELETE FROM notifications WHERE notification_id = %s',[notif_id])
             cursor.execute('COMMIT;')
             cursor.close()
             response_data = {}
@@ -44,29 +44,29 @@ def index(request):
     template = loader.get_template('patient/patient_loggedin.html')
     if request.user.is_authenticated:
         cursor = connection.cursor()
-        cursor.execute('SELECT * from Patients WHERE user_id=%s',[request.user.id])
+        cursor.execute('SELECT * from patients WHERE user_id=%s',[request.user.id])
         patient_details = dictfetchall(cursor)
         if len(patient_details)>=1:
-            cursor.execute('SELECT * from Notifications where patient_id=%s',[patient_details[0]['patient_id']])
+            cursor.execute('SELECT * from notifications where patient_id=%s',[patient_details[0]['patient_id']])
             notifications = dictfetchall(cursor)
-            cursor.execute('SELECT * from Examination WHERE patient_id=%s AND ((examination_date>cast(now() as date)) OR (examination_date=cast(now() as date) AND (start_time>=(cast(now() as time)))))',[patient_details[0]['patient_id']])
+            cursor.execute('SELECT * from examination WHERE patient_id=%s AND ((examination_date>cast(now() as date)) OR (examination_date=cast(now() as date) AND (start_time>=(cast(now() as time)))))',[patient_details[0]['patient_id']])
             upcoming_examinations= dictfetchall(cursor)
             print(upcoming_examinations)
-            cursor.execute('SELECT * from Examination WHERE patient_id=%s AND ((examination_date<cast(now() as date)) OR (examination_date=cast(now() as date) AND (start_time<(cast(now() as time)))))',[patient_details[0]['patient_id']])
+            cursor.execute('SELECT * from examination WHERE patient_id=%s AND ((examination_date<cast(now() as date)) OR (examination_date=cast(now() as date) AND (start_time<(cast(now() as time)))))',[patient_details[0]['patient_id']])
             previous_examinations = dictfetchall(cursor)
             print(previous_examinations)
-            cursor.execute('SELECT * from RegisteredAppointments WHERE patient_id=%s AND ((appointment_date<cast(now() as date)) OR ((appointment_date=cast(now() as date)) AND (appointment_time<(cast(now() as time)))))',[patient_details[0]['patient_id']])
+            cursor.execute('SELECT * from registeredappointments WHERE patient_id=%s AND ((appointment_date<cast(now() as date)) OR ((appointment_date=cast(now() as date)) AND (appointment_time<(cast(now() as time)))))',[patient_details[0]['patient_id']])
             previous_appointments = dictfetchall(cursor)
-            cursor.execute('SELECT * from RegisteredAppointments WHERE patient_id=%s AND ((appointment_date>cast(now() as date)) OR ((appointment_date=cast(now() as date)) AND (appointment_time>=(cast(now() as time)))))',[patient_details[0]['patient_id']])
+            cursor.execute('SELECT * from registeredappointments WHERE patient_id=%s AND ((appointment_date>cast(now() as date)) OR ((appointment_date=cast(now() as date)) AND (appointment_time>=(cast(now() as time)))))',[patient_details[0]['patient_id']])
             upcoming_appointments = dictfetchall(cursor)
-            cursor.execute('SELECT * FROM DoctorSpeciality')
+            cursor.execute('SELECT * FROM doctorspeciality')
             specialities = dictfetchall(cursor)
-            cursor.execute('SELECT * FROM Lab')
+            cursor.execute('SELECT * FROM lab')
             labs = dictfetchall(cursor)
             print(labs)
-            cursor.execute('SELECT * from Diseases')
+            cursor.execute('SELECT * from diseases')
             disease = dictfetchall(cursor)
-            cursor.execute('SELECT * FROM History,Diseases WHERE patient_id=%s and History.disease=Diseases.disease_id',[patient_details[0]['patient_id']])
+            cursor.execute('SELECT * FROM history,diseases WHERE patient_id=%s and History.disease=Diseases.disease_id',[patient_details[0]['patient_id']])
             history = dictfetchall(cursor)
             history = xyz(history,'start_date')
             for i in range(len(history)):
@@ -125,10 +125,10 @@ class PatientFormView(View):
         form = self.form_class(None)
         user_type=-1
         if(request.user.is_authenticated):
-            cursor.execute('SELECT * FROM Doctor where user_id=%s',[request.user.id])
+            cursor.execute('SELECT * FROM doctor where user_id=%s',[request.user.id])
             is_doc = dictfetchall(cursor)
             if(len(is_doc)==0):
-                cursor.execute('SELECT * from Patients where user_id=%s',[request.user.id])
+                cursor.execute('SELECT * from patients where user_id=%s',[request.user.id])
                 is_pat = dictfetchall(cursor)
                 if(len(is_pat)==0):
                     user_type=2
@@ -177,7 +177,7 @@ class PatientFormView(View):
                 User.objects.get(username=username)
             except User.DoesNotExist:
                 user = User.objects.create_user(username=username, email=email, password=password,first_name=first_name,last_name=last_name)
-                cursor.execute('INSERT INTO Patients(user_id,type,DOB,BloodGroup,AadharCard_No,Job,Street_no,Street_Name,Apt_Number,City,State,Zip_code,'
+                cursor.execute('INSERT INTO patients(user_id,type,DOB,BloodGroup,AadharCard_No,Job,Street_no,Street_Name,Apt_Number,City,State,Zip_code,'
                                'Gender,Account_No) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',[user.id,type,DOB,BloodGroup,AadharCard_No,Job,Street_no,Street_Name,Apt_Number,City,State,Zip_code,Gender,Account_No])
                 transaction.commit()
                 user.save()
@@ -186,7 +186,7 @@ class PatientFormView(View):
                 for i in final_contacts:
                     #check for duplicates and don't insert otherwise
                     #if i.
-                    cursor.execute('INSERT INTO Patient_Phone VALUES(%s,%s)',[val[0]['LAST_INSERT_ID()'],i])
+                    cursor.execute('INSERT INTO patient_phone VALUES(%s,%s)',[val[0]['LAST_INSERT_ID()'],i])
                 #returns Doctor objects if credentials are correct
                 user = authenticate(username=username, password=password)
                 if user is not None:
@@ -204,7 +204,7 @@ def book(request):
     print("HI")
     if(request.user.is_authenticated):
         with connection.cursor() as cursor:
-            cursor.execute('SELECT * from Patients WHERE user_id = %s',[request.user.id])
+            cursor.execute('SELECT * from patients WHERE user_id = %s',[request.user.id])
             patient_details = dictfetchall(cursor)
             if(len(patient_details)==1):
                 if request.method=="POST":
@@ -213,23 +213,23 @@ def book(request):
                     department = request.POST.get("department")
                     appointment_purpose = request.POST.get("Appointment_Purpose")
                     comments = request.POST.get("comments")
-                    cursor.execute('SELECT doctor_id from Doctor where speciality = %s',[department.strip()])
+                    cursor.execute('SELECT doctor_id from doctor where speciality = %s',[department.strip()])
                     docs = cursor.fetchall()
                     for i in docs:
-                        cursor.execute('SELECT * from Schedule where doctor_id = %s and date= %s and ((start_time<=%s and end_time>%s and start_time!=end_time) or (start_time>=%s and start_time<%s))',[i[0],appointment_date,appointment_time,appointment_time,appointment_time,add(appointment_time,15)])
+                        cursor.execute('SELECT * from schedule where doctor_id = %s and date= %s and ((start_time<=%s and end_time>%s and start_time!=end_time) or (start_time>=%s and start_time<%s))',[i[0],appointment_date,appointment_time,appointment_time,appointment_time,add(appointment_time,15)])
                         pc = cursor.fetchall()
                         if len(pc)==0:
                             cursor.execute('START TRANSACTION;')
-                            cursor.execute('INSERT INTO RegisteredAppointments(patient_id,appointment_date,'
+                            cursor.execute('INSERT INTO registeredappointments(patient_id,appointment_date,'
                                    'appointment_time,department,appointment_purpose,doctor_id) VALUES(%s,%s,%s,%s,%s,%s)',
                                             [patient_details[0]['patient_id'],appointment_date,appointment_time,department,appointment_purpose,i[0]])
                             cursor.execute('SELECT LAST_INSERT_ID();')
                             d = dictfetchall(cursor)
-                            cursor.execute('INSERT INTO Appointments(registered_id,is_registered) VALUES (%s,%s)',[d[0]['LAST_INSERT_ID()'],'1'])
+                            cursor.execute('INSERT INTO appointments(registered_id,is_registered) VALUES (%s,%s)',[d[0]['LAST_INSERT_ID()'],'1'])
                             cursor.execute('SELECT LAST_INSERT_ID();')
                             d =dictfetchall(cursor)
-                            cursor.execute('INSERT INTO Schedule(start_time,end_time,date,message,doctor_id,is_appointment,appointment_id) VALUES(%s,%s,%s,%s,%s,%s,%s)',[appointment_time,add(appointment_time,30),appointment_date,appointment_purpose,i[0],'1',d[0]['LAST_INSERT_ID()']])
-                            cursor.execute('SELECT username,doctor_id from auth_user,Doctor where doctor_id = %s and Doctor.user_id = auth_user.id',[i[0]])
+                            cursor.execute('INSERT INTO schedule(start_time,end_time,date,message,doctor_id,is_appointment,appointment_id) VALUES(%s,%s,%s,%s,%s,%s,%s)',[appointment_time,add(appointment_time,30),appointment_date,appointment_purpose,i[0],'1',d[0]['LAST_INSERT_ID()']])
+                            cursor.execute('SELECT username,doctor_id from auth_user,doctor where doctor_id = %s and Doctor.user_id = auth_user.id',[i[0]])
                             name = dictfetchall(cursor)
                             cursor.execute('COMMIT;')
                             #cursor2.execute('SELECT user_id from Doctor where doctor_id = %s',[i])
@@ -238,10 +238,10 @@ def book(request):
                             #name = cursor2.fetchall()
                             return render(request,'mainpage/Thank_you.html',{'appointment_time':appointment_time,'name':name[0]})
                     for i in docs:
-                        cursor.execute('SELECT MIN(start_time) FROM Schedule WHERE doctor_id=%s and date=%s and (start_time>=%s and start_time<=%s)',[i[0],appointment_date,appointment_time,add(appointment_time,15)])
+                        cursor.execute('SELECT MIN(start_time) FROM schedule WHERE doctor_id=%s and date=%s and (start_time>=%s and start_time<=%s)',[i[0],appointment_date,appointment_time,add(appointment_time,15)])
                         r = dictfetchall(cursor)
                         print(r)
-                        cursor.execute('SELECT * from Schedule where doctor_id = %s and date = %s and start_time=%s and (start_time >=%s and '
+                        cursor.execute('SELECT * from schedule where doctor_id = %s and date = %s and start_time=%s and (start_time >=%s and '
                                         'NOT EXISTS(SELECT * from Schedule where doctor_id = %s and date = %s and (end_time>=%s and end_time <=%s)))'
                                         ,[i[0],appointment_date,r[0]['MIN(start_time)'],add(appointment_time,-15),i[0],appointment_date,add(appointment_time,-15),r[0]['MIN(start_time)']])
                         pc = dictfetchall(cursor)
@@ -250,18 +250,18 @@ def book(request):
                             print(schedule)
                             if str(schedule['end_time'])>=appointment_time:
                                 cursor.execute('START TRANSACTION;')
-                                cursor.execute('INSERT INTO RegisteredAppointments(patient_id,appointment_date,'
+                                cursor.execute('INSERT INTO registeredappointments(patient_id,appointment_date,'
                                    'appointment_time,department,appointment_purpose,doctor_id) VALUES(%s,%s,%s,%s,%s,%s)',
                                             [patient_details[0]['patient_id'],appointment_date,add(schedule['start_time'],-15),department,appointment_purpose,i[0]])
                                 cursor.execute('SELECT LAST_INSERT_ID();')
                                 d = dictfetchall(cursor)
-                                cursor.execute('INSERT INTO Appointments(registered_id,is_registered) VALUES (%s,%s)',[d[0]['LAST_INSERT_ID()'],'1'])
+                                cursor.execute('INSERT INTO appointments(registered_id,is_registered) VALUES (%s,%s)',[d[0]['LAST_INSERT_ID()'],'1'])
                                 cursor.execute('SELECT LAST_INSERT_ID();')
                                 d =dictfetchall(cursor)
-                                cursor.execute('INSERT INTO Schedule(start_time,end_time,date,message,doctor_id,is_appointment,appointment_id) VALUES(%s,%s,%s,%s,%s,%s,%s)',[add(schedule['start_time'],-15),schedule['start_time'],appointment_date,appointment_purpose,i[0],'1',d[0]['LAST_INSERT_ID()']])
+                                cursor.execute('INSERT INTO schedule(start_time,end_time,date,message,doctor_id,is_appointment,appointment_id) VALUES(%s,%s,%s,%s,%s,%s,%s)',[add(schedule['start_time'],-15),schedule['start_time'],appointment_date,appointment_purpose,i[0],'1',d[0]['LAST_INSERT_ID()']])
 
                                 transaction.commit()
-                                cursor.execute('SELECT username from auth_user,Doctor where doctor_id = %s and Doctor.user_id = auth_user.id',[i[0]])
+                                cursor.execute('SELECT username from auth_user,doctor where doctor_id = %s and Doctor.user_id = auth_user.id',[i[0]])
                                 name = cursor2.fetchall()
                                 cursor.execute('COMMIT;')
                                 #cursor2.execute('SELECT user_id from Doctor where doctor_id = %s',[i])
@@ -269,27 +269,27 @@ def book(request):
                                 #cursor2.execute('SELECT username from auth_user where id = %s',[id])
                                 #name = cursor2.fetchall()
                                 return HttpResponse("Thank you your appointment has been booked at 15 minute before " + str(schedule['start_time']) + " with doctor <a href =   > Homepage here</a>.")
-                        cursor.execute('SELECT MAX(end_time) FROM Schedule WHERE doctor_id = %s and date = %s and (start_time<=%s and end_time>%s)',[i[0],appointment_date,appointment_time,appointment_time])
+                        cursor.execute('SELECT MAX(end_time) FROM schedule WHERE doctor_id = %s and date = %s and (start_time<=%s and end_time>%s)',[i[0],appointment_date,appointment_time,appointment_time])
                         r = dictfetchall(cursor)
-                        cursor.execute('SELECT * from Schedule where doctor_id = %s and date = %s and end_time=%s and (start_time<=%s and end_time>%s and end_time<=%s and NOT EXISTS(SELECT * FROM Schedule where doctor_id = %s and date = %s and start_time>=%s and start_time<=%s))',
+                        cursor.execute('SELECT * from schedule where doctor_id = %s and date = %s and end_time=%s and (start_time<=%s and end_time>%s and end_time<=%s and NOT EXISTS(SELECT * FROM Schedule where doctor_id = %s and date = %s and start_time>=%s and start_time<=%s))',
                                         [i[0],appointment_date,r[0]['MAX(end_time)'],appointment_time,appointment_time,add(appointment_time,15),i[0],appointment_date,r[0]['MAX(end_time)'],add(r[0]['MAX(end_time)'],15)])
                         pc = dictfetchall(cursor)
                         if len(pc)>=1:
                             schedule = pc[0]
                             if str(schedule['end_time'])>=appointment_time:
                                 cursor.execute('START TRANSACTION;')
-                                cursor.execute('INSERT INTO RegisteredAppointments(patient_id,appointment_date,'
+                                cursor.execute('INSERT INTO registeredappointments(patient_id,appointment_date,'
                                    'appointment_time,department,appointment_purpose,doctor_id) VALUES(%s,%s,%s,%s,%s,%s)',
                                             [patient_details[0]['patient_id'],appointment_date,schedule['end_time'],department,appointment_purpose,i[0]])
                                 cursor.execute('SELECT LAST_INSERT_ID();')
                                 d = dictfetchall(cursor)
-                                cursor.execute('INSERT INTO Appointments(registered_id,is_registered) VALUES (%s,%s)',[d[0]['LAST_INSERT_ID()'],'1'])
+                                cursor.execute('INSERT INTO appointments(registered_id,is_registered) VALUES (%s,%s)',[d[0]['LAST_INSERT_ID()'],'1'])
                                 cursor.execute('SELECT LAST_INSERT_ID();')
                                 d = dictfetchall(cursor)
                                 print(d)
-                                cursor.execute('INSERT INTO Schedule(start_time,end_time,date,message,doctor_id,is_appointment,appointment_id) VALUES(%s,%s,%s,%s,%s,%s,%s)',[schedule['end_time'],add(schedule['end_time'],15),appointment_date,appointment_purpose,i[0],'1',d[0]['LAST_INSERT_ID()']])
+                                cursor.execute('INSERT INTO schedule(start_time,end_time,date,message,doctor_id,is_appointment,appointment_id) VALUES(%s,%s,%s,%s,%s,%s,%s)',[schedule['end_time'],add(schedule['end_time'],15),appointment_date,appointment_purpose,i[0],'1',d[0]['LAST_INSERT_ID()']])
                                 transaction.commit()
-                                cursor.execute('SELECT username from auth_user,Doctor where doctor_id = %s and Doctor.user_id = auth_user.id',[i[0]])
+                                cursor.execute('SELECT username from auth_user,doctor where doctor_id = %s and Doctor.user_id = auth_user.id',[i[0]])
                                 name = cursor.fetchall()
                                 cursor.execute('COMMIT;')
                                 #cursor2.execute('SELECT user_id from Doctor where doctor_id = %s',[i])
@@ -316,7 +316,7 @@ def changedetails(request):
     if request.method=='GET':
         if(request.user.is_authenticated):
             with connection.cursor() as cursor:
-                cursor.execute('SELECT type,DOB,BloodGroup,Job,Street_no,Street_Name,Apt_Number,City,State,Zip_code,Gender,Account_No,first_name,last_name,email,password FROM Patients,auth_user WHERE user_id=%s and Patients.user_id=auth_user.id',[request.user.id])
+                cursor.execute('SELECT type,DOB,BloodGroup,Job,Street_no,Street_Name,Apt_Number,City,State,Zip_code,Gender,Account_No,first_name,last_name,email,password FROM patients,auth_user WHERE user_id=%s and Patients.user_id=auth_user.id',[request.user.id])
                 patient_details = dictfetchall(cursor)
                 pat_det = []
                 for i in range(len(patient_details[0])):
@@ -331,7 +331,7 @@ def changedetails(request):
             if(request.POST.get(i)):
                 val = request.POST.get(i)
                 with connection.cursor() as cursor:
-                    cursor.execute('SELECT * from Patients WHERE user_id=%s',[request.user.id])
+                    cursor.execute('SELECT * from patients WHERE user_id=%s',[request.user.id])
                     patient_details = dictfetchall(cursor)
                     if(len(patient_details)==1):
                         cursor.execute('START TRANSACTION;')
@@ -345,29 +345,29 @@ def changedetails(request):
                             elif(i=="password"):
                                 cursor.execute('UPDATE auth_user SET password=%s WHERE id=%s',[val,request.user.id])
                             elif(i=="type"):
-                                cursor.execute('UPDATE Patients SET type=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
+                                cursor.execute('UPDATE patients SET type=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
                             elif(i=="DOB"):
-                                cursor.execute('UPDATE Patients SET DOB=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
+                                cursor.execute('UPDATE patients SET DOB=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
                             elif(i=="BloodGroup"):
-                                cursor.execute('UPDATE Patients SET BloodGroup=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
+                                cursor.execute('UPDATE patients SET BloodGroup=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
                             elif(i=="Job"):
-                                cursor.execute('UPDATE Patients SET Job=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
+                                cursor.execute('UPDATE patients SET Job=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
                             elif(i=="Street_no"):       
-                                cursor.execute('UPDATE Patients SET Street_no=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
+                                cursor.execute('UPDATE patients SET Street_no=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
                             elif(i=="Street_Name"):
-                                cursor.execute('UPDATE Patients SET Street_Name=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
+                                cursor.execute('UPDATE patients SET Street_Name=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
                             elif(i=="Apt_Number"):
-                                cursor.execute('UPDATE Patients SET Apt_Number=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
+                                cursor.execute('UPDATE patients SET Apt_Number=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
                             elif(i=="City"):
-                                cursor.execute('UPDATE Patients SET City=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
+                                cursor.execute('UPDATE patients SET City=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
                             elif(i=="State"):
-                                cursor.execute('UPDATE Patients SET State=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
+                                cursor.execute('UPDATE patients SET State=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
                             elif(i=="Zip_code"):
-                                cursor.execute('UPDATE Patients SET Zip_code=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
+                                cursor.execute('UPDATE patients SET Zip_code=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
                             elif(i=="Gender"):
-                                cursor.execute('UPDATE Patients SET Gender=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
+                                cursor.execute('UPDATE patients SET Gender=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
                             elif(i=="Account_No"):
-                                cursor.execute('UPDATE Patients SET Account_No=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
+                                cursor.execute('UPDATE patients SET Account_No=%s WHERE patient_id=%s',[val,patient_details[0]['patient_id']])
                             else:
                                 status = 500
                                 response_data={}
@@ -396,7 +396,7 @@ def request_examination(request):
     print("HI")
     if(request.user.is_authenticated):
         with connection.cursor() as cursor:
-            cursor.execute('SELECT * from Patients WHERE user_id = %s',[request.user.id])
+            cursor.execute('SELECT * from patients WHERE user_id = %s',[request.user.id])
             patient_details = dictfetchall(cursor)
             if(len(patient_details)==1):
                 if request.method=="POST":
@@ -407,19 +407,19 @@ def request_examination(request):
                     examination_purpose = request.POST.get("Examination_Purpose")
                     examination_type = request.POST.get("Examination_Type")
                     disease = request.POST.get("disease")
-                    cursor.execute('SELECT doctor_id from Doctor where lab = %s',[lab])
+                    cursor.execute('SELECT doctor_id from doctor where lab = %s',[lab])
                     docs = cursor.fetchall()
                     print(docs)
                     for i in docs:
-                        cursor.execute('SELECT * from Schedule where doctor_id = %s and date= %s and ((start_time<=%s and end_time>%s and start_time!=end_time) or (start_time>=%s and start_time<%s))',[i[0],appointment_date,appointment_time,appointment_time,appointment_time,add(appointment_time,15)])
+                        cursor.execute('SELECT * from schedule where doctor_id = %s and date= %s and ((start_time<=%s and end_time>%s and start_time!=end_time) or (start_time>=%s and start_time<%s))',[i[0],appointment_date,appointment_time,appointment_time,appointment_time,add(appointment_time,15)])
                         pc = cursor.fetchall()
                         if len(pc)==0:
                             cursor.execute('START TRANSACTION;')
-                            cursor.execute('INSERT INTO Examination(patient_id,examination_date,disease,'
+                            cursor.execute('INSERT INTO examination(patient_id,examination_date,disease,'
                                    'start_time,end_time,lab,examination_type,doctor_id,is_done) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)',
                                             [patient_details[0]['patient_id'],appointment_date,disease,appointment_time,add(appointment_time,30),lab,examination_type,i[0],'0'])
-                            cursor.execute('INSERT INTO Schedule(start_time,end_time,date,message,doctor_id,is_appointment,is_examination) VALUES(%s,%s,%s,%s,%s,%s,%s)',[appointment_time,add(appointment_time,30),appointment_date,"Examination Purpose"+ examination_purpose,i[0],'0','1'])
-                            cursor.execute('SELECT username,doctor_id from auth_user,Doctor where doctor_id = %s and Doctor.user_id = auth_user.id',[i[0]])
+                            cursor.execute('INSERT INTO schedule(start_time,end_time,date,message,doctor_id,is_appointment,is_examination) VALUES(%s,%s,%s,%s,%s,%s,%s)',[appointment_time,add(appointment_time,30),appointment_date,"Examination Purpose"+ examination_purpose,i[0],'0','1'])
+                            cursor.execute('SELECT username,doctor_id from auth_user,doctor where doctor_id = %s and Doctor.user_id = auth_user.id',[i[0]])
                             name = dictfetchall(cursor)
                             cursor.execute('COMMIT;')
                             #cursor2.execute('SELECT user_id from Doctor where doctor_id = %s',[i])
@@ -428,10 +428,10 @@ def request_examination(request):
                             #name = cursor2.fetchall()
                             return render(request,'mainpage/Thank_you.html',{'appointment_time':appointment_time,'name':name[0]})
                     for i in docs:
-                        cursor.execute('SELECT MIN(start_time) FROM Schedule WHERE doctor_id=%s and date=%s and (start_time>=%s and start_time<=%s)',[i[0],appointment_date,appointment_time,add(appointment_time,15)])
+                        cursor.execute('SELECT MIN(start_time) FROM schedule WHERE doctor_id=%s and date=%s and (start_time>=%s and start_time<=%s)',[i[0],appointment_date,appointment_time,add(appointment_time,15)])
                         r = dictfetchall(cursor)
-                        cursor.execute('SELECT * from Schedule where doctor_id = %s and date = %s and start_time=%s and (start_time >=%s and '
-                                        'NOT EXISTS(SELECT * from Schedule where doctor_id = %s and date = %s and (end_time>=%s and end_time <=%s)))'
+                        cursor.execute('SELECT * from schedule where doctor_id = %s and date = %s and start_time=%s and (start_time >=%s and '
+                                        'NOT EXISTS(SELECT * from schedule where doctor_id = %s and date = %s and (end_time>=%s and end_time <=%s)))'
                                         ,[i[0],appointment_date,r[0]['MIN(start_time)'],add(appointment_time,-15),i[0],appointment_date,add(appointment_time,-15),r[0]['MIN(start_time)']])
                         pc = dictfetchall(cursor)
                         if len(pc)>=1:
@@ -439,12 +439,12 @@ def request_examination(request):
                             print(schedule)
                             if str(schedule['end_time'])>=appointment_time:
                                 cursor.execute('START TRANSACTION;')
-                                cursor.execute('INSERT INTO Examination(disease,patient_id,examination_date,'
+                                cursor.execute('INSERT INTO examination(disease,patient_id,examination_date,'
                                    'start_time,end_time,lab,examination_type,doctor_id,is_done) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)',
                                             [disease,patient_details[0]['patient_id'],appointment_date,add(schedule['start_time'],-15),schedule['start_time'],lab,examination_type,i[0],'0'])
-                                cursor.execute('INSERT INTO Schedule(start_time,end_time,date,message,doctor_id,is_appointment,is_examination) VALUES(%s,%s,%s,%s,%s,%s,%s)',[add(schedule['start_time'],-15),schedule['start_time'],appointment_date,"Examination Purpose"+ examination_purpose,i[0],'0','1'])
+                                cursor.execute('INSERT INTO schedule(start_time,end_time,date,message,doctor_id,is_appointment,is_examination) VALUES(%s,%s,%s,%s,%s,%s,%s)',[add(schedule['start_time'],-15),schedule['start_time'],appointment_date,"Examination Purpose"+ examination_purpose,i[0],'0','1'])
 
-                                cursor.execute('SELECT username from auth_user,Doctor where doctor_id = %s and Doctor.user_id = auth_user.id',[i[0]])
+                                cursor.execute('SELECT username from auth_user,doctor where doctor_id = %s and Doctor.user_id = auth_user.id',[i[0]])
                                 name = cursor.fetchall()
                                 cursor.execute('COMMIT;')
                                 #cursor2.execute('SELECT user_id from Doctor where doctor_id = %s',[i])
@@ -452,9 +452,9 @@ def request_examination(request):
                                 #cursor2.execute('SELECT username from auth_user where id = %s',[id])
                                 #name = cursor2.fetchall()
                                 return HttpResponse("Thank you your examination has been booked at 15 minute before " + str(schedule['start_time']) + " with doctor <a href =  "" > Homepage here</a>.")
-                        cursor.execute('SELECT MAX(end_time) FROM Schedule WHERE doctor_id = %s and date = %s and (start_time<=%s and end_time>%s)',[i[0],appointment_date,appointment_time,appointment_time])
+                        cursor.execute('SELECT MAX(end_time) FROM schedule WHERE doctor_id = %s and date = %s and (start_time<=%s and end_time>%s)',[i[0],appointment_date,appointment_time,appointment_time])
                         r = dictfetchall(cursor)
-                        cursor.execute('SELECT * from Schedule where doctor_id = %s and date = %s and end_time=%s and (start_time<=%s and end_time>%s and end_time<=%s and NOT EXISTS(SELECT * FROM Schedule where doctor_id = %s and date = %s and start_time>=%s and start_time<=%s))',
+                        cursor.execute('SELECT * from schedule where doctor_id = %s and date = %s and end_time=%s and (start_time<=%s and end_time>%s and end_time<=%s and NOT EXISTS(SELECT * FROM schedule where doctor_id = %s and date = %s and start_time>=%s and start_time<=%s))',
                                         [i[0],appointment_date,r[0]['MAX(end_time)'],appointment_time,appointment_time,add(appointment_time,15),i[0],appointment_date,r[0]['MAX(end_time)'],add(r[0]['MAX(end_time)'],15)])
                         pc = dictfetchall(cursor)
                         if len(pc)>=1:
@@ -462,11 +462,11 @@ def request_examination(request):
                             if str(schedule['end_time'])>=appointment_time:
                                 cursor.execute('START TRANSACTION;')
                                 print(appointment_date,appointment_time)
-                                cursor.execute('INSERT INTO Examination(disease,patient_id,examination_date,'
+                                cursor.execute('INSERT INTO examination(disease,patient_id,examination_date,'
                                    'start_time,end_time,lab,examination_type,doctor_id,is_done) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)',
                                             [disease,patient_details[0]['patient_id'],appointment_date,schedule['end_time'],add(schedule['end_time'],15),lab,examination_type,i[0],'0'])
-                                cursor.execute('INSERT INTO Schedule(start_time,end_time,date,message,doctor_id,is_appointment,is_examination) VALUES(%s,%s,%s,%s,%s,%s,%s)',[schedule['end_time'],add(schedule['end_time'],15),appointment_date,"Examination Purpose"+ examination_purpose,i[0],'0','1'])
-                                cursor.execute('SELECT username from auth_user,Doctor where doctor_id = %s and Doctor.user_id = auth_user.id',[i[0]])
+                                cursor.execute('INSERT INTO schedule(start_time,end_time,date,message,doctor_id,is_appointment,is_examination) VALUES(%s,%s,%s,%s,%s,%s,%s)',[schedule['end_time'],add(schedule['end_time'],15),appointment_date,"Examination Purpose"+ examination_purpose,i[0],'0','1'])
+                                cursor.execute('SELECT username from auth_user,doctor where doctor_id = %s and Doctor.user_id = auth_user.id',[i[0]])
                                 name = cursor.fetchall()
                                 cursor.execute('COMMIT;')
                                 #cursor2.execute('SELECT user_id from Doctor where doctor_id = %s',[i])
@@ -486,7 +486,7 @@ def request_examination(request):
 def enterhistory(request):
     if(request.method=='GET'):
         with connection.cursor() as cursor:
-            cursor.execute('SELECT * FROM Diseases')
+            cursor.execute('SELECT * FROM diseases')
             diseases = dictfetchall(cursor)
             context={'diseases':diseases,}
         return render(request,'patient/enterhistory.html',context)
@@ -496,11 +496,11 @@ def enterhistory(request):
             start_time = request.POST.get('start_time')
             end_time = request.POST.get('end_time')
             details = request.POST.get('details')
-            cursor.execute('SELECT patient_id from Patients WHERE user_id=%s',[request.user.id])
+            cursor.execute('SELECT patient_id from patients WHERE user_id=%s',[request.user.id])
             patient_id = dictfetchall(cursor)
             if(len(patient_id)==1):
                 cursor.execute('START TRANSACTION;')
-                cursor.execute('INSERT INTO History(disease,start_date,end_date,patient_id,details) VALUES(%s,%s,%s,%s,%s)',[disease,start_time,end_time,patient_id[0]['patient_id'],details])
+                cursor.execute('INSERT INTO history(disease,start_date,end_date,patient_id,details) VALUES(%s,%s,%s,%s,%s)',[disease,start_time,end_time,patient_id[0]['patient_id'],details])
                 cursor.execute('COMMIT;')
                 return redirect('patient:index')
             else:
@@ -509,10 +509,10 @@ def enterhistory(request):
 def showbills(request):
     if(request.user.is_authenticated):
         with connection.cursor() as cursor:
-            cursor.execute('SELECT * from Patients WHERE user_id=%s',[request.user.id])
+            cursor.execute('SELECT * from patients WHERE user_id=%s',[request.user.id])
             patients = dictfetchall(cursor)
             if(len(patients)==1):
-                cursor.execute('SELECT * from Bill WHERE patient_id=%s',[patients[0]['patient_id']])
+                cursor.execute('SELECT * from bill WHERE patient_id=%s',[patients[0]['patient_id']])
                 bills = dictfetchall(cursor)
                 context={'bills':bills,}
                 return render(request,'patient/show_bills.html',context)
